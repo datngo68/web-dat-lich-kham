@@ -1,0 +1,111 @@
+{
+  "appName": "Hospital Appointment Booking System",
+  "welcome": "Welcome",
+  "hello": "Hello",
+  "loading": "Loading...",
+  "noData": "No data",
+  "search": "Search",
+  "filter": "Filter",
+  "export": "Export",
+  "import": "Import",
+  "upload": "Upload",
+  "download": "Download",
+  "print": "Print",
+  "refresh": "Refresh",
+  "back": "Back",
+  "next": "Next",
+  "previous": "Previous",
+  "submit": "Submit",
+  "save": "Save",
+  "edit": "Edit",
+  "delete": "Delete",
+  "view": "View",
+  "add": "Add",
+  "remove": "Remove",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "yes": "Yes",
+  "no": "No",
+  "ok": "OK",
+  "close": "Close",
+  "success": "Success",
+  "error": "Error",
+  "warning": "Warning",
+  "info": "Information",
+  "actions": "Actions",
+  "status": "Status",
+  "date": "Date",
+  "time": "Time",
+  "name": "Name",
+  "email": "Email",
+  "phone": "Phone Number",
+  "address": "Address",
+  "description": "Description",
+  "details": "Details",
+  "home": "Home",
+  "dashboard": "Dashboard",
+  "profile": "Profile",
+  "settings": "Settings",
+  "logout": "Logout",
+  "login": "Login",
+  "register": "Register",
+  "nav": {
+    "home": "Home",
+    "doctors": "Doctors",
+    "appointments": "Appointments",
+    "profile": "Profile",
+    "admin": "Admin"
+  },
+  "footer": {
+    "about": "About Us",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "time": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "night": "Night"
+  },
+  "date": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow"
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+  "status": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "gender": {
+    "male": "Male",
+    "female": "Female",
+    "other": "Other"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "doctor": "Doctor",
+    "user": "User"
+  },
+  "messages": {
+    "success": "Operation successful",
+    "error": "An error occurred",
+    "confirmDelete": "Are you sure you want to delete?",
+    "noResults": "No results found",
+    "networkError": "Network connection error",
+    "tryAgain": "Please try again"
+  }
+}

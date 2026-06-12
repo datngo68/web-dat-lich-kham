@@ -1,0 +1,72 @@
+{
+  "title": "Thanh toán",
+  "payment": "Thanh toán",
+  "paymentMethod": "Phương thức thanh toán",
+  "paymentStatus": "Trạng thái thanh toán",
+  "amount": "Số tiền",
+  "transactionId": "Mã giao dịch",
+  "methods": {
+    "title": "Chọn phương thức thanh toán",
+    "vietqr": "VietQR",
+    "vnpay": "VNPay",
+    "momo": "MoMo",
+    "creditCard": "Thẻ tín dụng",
+    "cash": "Tiền mặt",
+    "bankTransfer": "Chuyển khoản ngân hàng"
+  },
+  "vietqr": {
+    "title": "Thanh toán VietQR",
+    "scan": "Quét mã QR để thanh toán",
+    "bankAccount": "Tài khoản ngân hàng",
+    "accountNumber": "Số tài khoản",
+    "accountName": "Tên tài khoản",
+    "amount": "Số tiền",
+    "content": "Nội dung chuyển khoản",
+    "instructions": "Hướng dẫn thanh toán",
+    "step1": "Mở ứng dụng ngân hàng của bạn",
+    "step2": "Quét mã QR hoặc nhập thông tin chuyển khoản",
+    "step3": "Xác nhận thanh toán",
+    "note": "Lưu ý: Vui lòng giữ nguyên nội dung chuyển khoản"
+  },
+  "status": {
+    "pending": "Đang xử lý",
+    "success": "Thành công",
+    "failed": "Thất bại",
+    "refunded": "Đã hoàn tiền",
+    "paid": "Đã thanh toán",
+    "unpaid": "Chưa thanh toán"
+  },
+  "actions": {
+    "pay": "Thanh toán",
+    "payNow": "Thanh toán ngay",
+    "cancel": "Hủy",
+    "refund": "Hoàn tiền",
+    "viewReceipt": "Xem biên lai",
+    "downloadReceipt": "Tải biên lai"
+  },
+  "details": {
+    "title": "Chi tiết thanh toán",
+    "appointmentId": "Mã lịch khám",
+    "patientName": "Tên bệnh nhân",
+    "doctorName": "Tên bác sĩ",
+    "consultationFee": "Phí khám",
+    "discount": "Giảm giá",
+    "total": "Tổng cộng",
+    "paymentDate": "Ngày thanh toán",
+    "paymentTime": "Giờ thanh toán"
+  },
+  "messages": {
+    "paymentSuccess": "Thanh toán thành công",
+    "paymentFailed": "Thanh toán thất bại",
+    "paymentPending": "Đang xử lý thanh toán",
+    "refundSuccess": "Hoàn tiền thành công",
+    "selectMethod": "Vui lòng chọn phương thức thanh toán",
+    "confirmPayment": "Xác nhận thanh toán",
+    "processingPayment": "Đang xử lý...",
+    "alreadyPaid": "Lịch khám đã được thanh toán"
+  },
+  "validation": {
+    "methodRequired": "Vui lòng chọn phương thức thanh toán",
+    "amountInvalid": "Số tiền không hợp lệ"
+  }
+}

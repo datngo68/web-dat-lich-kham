@@ -1,0 +1,181 @@
+{
+  "title": "Administration",
+  "dashboard": "Dashboard",
+  "overview": "Overview",
+  "header": {
+    "badge": "Administrator",
+    "title": "Command",
+    "subtitle": "Center",
+    "description": "Monitoring Sunrise Hospital performance and operations",
+    "searchPlaceholder": "Search everything...",
+    "exportButton": "Export Analytics"
+  },
+  "metrics": {
+    "totalPatients": "Total Patients",
+    "totalAppointments": "Total Appointments",
+    "platformRevenue": "Platform Revenue",
+    "doctorAvailability": "Doctor Availability"
+  },
+  "appointmentStatus": {
+    "pending": "Pending",
+    "scheduled": "Scheduled",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "charts": {
+    "revenueAnalytics": {
+      "title": "Revenue Analytics",
+      "description": "Monthly revenue growth and projections",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "appointmentStatus": {
+      "title": "Appointment Status",
+      "description": "Distribution by current state"
+    },
+    "weeklyEngagement": {
+      "title": "Weekly Engagement",
+      "description": "Daily appointment volume for the current week",
+      "peak": "Peak: Friday"
+    }
+  },
+  "operations": {
+    "title": "Operations Management",
+    "accessModule": "Access Module",
+    "modules": {
+      "userBase": {
+        "title": "User Base",
+        "description": "Patients and medical staff"
+      },
+      "specialists": {
+        "title": "Specialists",
+        "description": "Doctor profiles & schedules"
+      },
+      "specialtyHub": {
+        "title": "Specialty Hub",
+        "description": "Medical departments & units"
+      },
+      "appointments": {
+        "title": "Appointments",
+        "description": "Booking logs & status"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Detailed business reports"
+      }
+    }
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "doctors": "Doctors",
+    "appointments": "Appointments",
+    "hospitals": "Hospitals",
+    "specialties": "Specialties",
+    "payments": "Payments",
+    "statistics": "Statistics",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "users": {
+    "title": "User Management",
+    "list": "User List",
+    "add": "Add User",
+    "edit": "Edit User",
+    "delete": "Delete User",
+    "view": "View Details",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "role": "Role",
+    "status": "Status",
+    "lastLogin": "Last Login",
+    "createdAt": "Created At"
+  },
+  "doctors": {
+    "title": "Doctor Management",
+    "list": "Doctor List",
+    "add": "Add Doctor",
+    "edit": "Edit Doctor",
+    "delete": "Delete Doctor",
+    "view": "View Profile",
+    "assign": "Assign",
+    "schedule": "Schedule",
+    "statistics": "Doctor Statistics"
+  },
+  "appointments": {
+    "title": "Appointment Management",
+    "list": "Appointment List",
+    "view": "View Details",
+    "approve": "Approve",
+    "reject": "Reject",
+    "cancel": "Cancel",
+    "reschedule": "Reschedule",
+    "statistics": "Appointment Statistics",
+    "byStatus": "By Status",
+    "byDoctor": "By Doctor",
+    "byDate": "By Date"
+  },
+  "hospitals": {
+    "title": "Hospital Management",
+    "list": "Hospital List",
+    "add": "Add Hospital",
+    "edit": "Edit Hospital",
+    "delete": "Delete Hospital",
+    "view": "View Details"
+  },
+  "specialties": {
+    "title": "Specialty Management",
+    "list": "Specialty List",
+    "add": "Add Specialty",
+    "edit": "Edit Specialty",
+    "delete": "Delete Specialty"
+  },
+  "payments": {
+    "title": "Payment Management",
+    "list": "Transaction List",
+    "view": "View Details",
+    "refund": "Refund",
+    "statistics": "Revenue Statistics",
+    "total": "Total Revenue",
+    "byMethod": "By Method",
+    "byStatus": "By Status"
+  },
+  "statistics": {
+    "title": "Statistics",
+    "overview": "Overview",
+    "revenue": "Revenue",
+    "appointments": "Appointments",
+    "patients": "Patients",
+    "doctors": "Doctors",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "export": "Export Report",
+    "filters": "Filters",
+    "dateRange": "Date Range",
+    "compare": "Compare"
+  },
+  "reports": {
+    "title": "Reports",
+    "generate": "Generate Report",
+    "revenue": "Revenue Report",
+    "appointments": "Appointment Report",
+    "doctors": "Doctor Report",
+    "patients": "Patient Report",
+    "export": {
+      "pdf": "Export PDF",
+      "excel": "Export Excel",
+      "json": "Export JSON"
+    }
+  },
+  "messages": {
+    "deleteConfirm": "Are you sure you want to delete?",
+    "deleteSuccess": "Deleted successfully",
+    "deleteError": "Failed to delete",
+    "updateSuccess": "Updated successfully",
+    "updateError": "Failed to update",
+    "createSuccess": "Created successfully",
+    "createError": "Failed to create"
+  }
+}

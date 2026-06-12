@@ -1,0 +1,110 @@
+{
+  "title": "Lịch khám",
+  "myAppointments": "Lịch khám của tôi",
+  "bookAppointment": "Đặt lịch khám",
+  "viewDetails": "Xem chi tiết",
+  "upcoming": "Sắp tới",
+  "past": "Đã qua",
+  "all": "Tất cả",
+  "booking": {
+    "title": "Đặt lịch khám",
+    "selectDoctor": "Chọn bác sĩ",
+    "selectDate": "Chọn ngày khám",
+    "selectTime": "Chọn giờ khám",
+    "selectSlot": "Chọn khung giờ",
+    "reason": "Lý do khám",
+    "symptoms": "Triệu chứng",
+    "notes": "Ghi chú thêm",
+    "consultationType": "Hình thức khám",
+    "online": "Trực tuyến",
+    "offline": "Trực tiếp",
+    "video": "Video call",
+    "phone": "Điện thoại",
+    "fee": "Phí khám",
+    "confirm": "Xác nhận đặt lịch",
+    "success": "Đặt lịch thành công",
+    "error": "Đặt lịch thất bại"
+  },
+  "details": {
+    "title": "Chi tiết lịch khám",
+    "appointmentId": "Mã lịch khám",
+    "doctor": "Bác sĩ",
+    "patient": "Bệnh nhân",
+    "date": "Ngày khám",
+    "time": "Giờ khám",
+    "status": "Trạng thái",
+    "reason": "Lý do khám",
+    "notes": "Ghi chú",
+    "consultationType": "Hình thức",
+    "fee": "Phí khám",
+    "paymentStatus": "Thanh toán"
+  },
+  "status": {
+    "pending": "Chờ xác nhận",
+    "confirmed": "Đã xác nhận",
+    "completed": "Hoàn thành",
+    "cancelled": "Đã hủy",
+    "rescheduled": "Đã đổi lịch"
+  },
+  "actions": {
+    "reschedule": "Đổi lịch",
+    "cancel": "Hủy lịch",
+    "complete": "Hoàn thành",
+    "review": "Đánh giá",
+    "viewRecord": "Xem hồ sơ",
+    "pay": "Thanh toán"
+  },
+  "reschedule": {
+    "title": "Đổi lịch khám",
+    "newDate": "Ngày mới",
+    "newTime": "Giờ mới",
+    "reason": "Lý do đổi lịch",
+    "confirm": "Xác nhận đổi lịch",
+    "success": "Đổi lịch thành công",
+    "error": "Đổi lịch thất bại"
+  },
+  "cancel": {
+    "title": "Hủy lịch khám",
+    "reason": "Lý do hủy",
+    "confirm": "Xác nhận hủy",
+    "warning": "Bạn có chắc chắn muốn hủy lịch khám này?",
+    "success": "Hủy lịch thành công",
+    "error": "Hủy lịch thất bại"
+  },
+  "review": {
+    "title": "Đánh giá lịch khám",
+    "rating": "Đánh giá",
+    "comment": "Nhận xét",
+    "submit": "Gửi đánh giá",
+    "success": "Gửi đánh giá thành công",
+    "error": "Gửi đánh giá thất bại"
+  },
+  "payment": {
+    "title": "Thanh toán",
+    "status": {
+      "paid": "Đã thanh toán",
+      "unpaid": "Chưa thanh toán",
+      "pending": "Đang xử lý",
+      "refunded": "Đã hoàn tiền"
+    },
+    "payNow": "Thanh toán ngay",
+    "amount": "Số tiền",
+    "method": "Phương thức"
+  },
+  "messages": {
+    "noAppointments": "Bạn chưa có lịch khám nào",
+    "bookNow": "Đặt lịch ngay",
+    "slotTaken": "Khung giờ này đã được đặt",
+    "pastDate": "Không thể đặt lịch cho ngày trong quá khứ",
+    "cannotCancel": "Không thể hủy lịch khám này",
+    "cannotReschedule": "Không thể đổi lịch khám này",
+    "confirmRequired": "Vui lòng chờ xác nhận từ bác sĩ"
+  },
+  "validation": {
+    "doctorRequired": "Vui lòng chọn bác sĩ",
+    "dateRequired": "Vui lòng chọn ngày khám",
+    "timeRequired": "Vui lòng chọn giờ khám",
+    "reasonRequired": "Vui lòng nhập lý do khám",
+    "symptomsRequired": "Vui lòng mô tả triệu chứng"
+  }
+}

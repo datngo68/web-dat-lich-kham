@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/stores/authStore';
 import { Navbar } from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -42,6 +43,7 @@ import {
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const { t } = useTranslation('admin');
   const { user, isAuthenticated, isInitialized } = useAuthStore();
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -109,10 +111,10 @@ export default function AdminDashboard() {
   const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
 
   const appointmentPieData = stats?.appointmentStats ? [
-    { name: 'Pending', value: stats.appointmentStats.pending },
-    { name: 'Scheduled', value: stats.appointmentStats.scheduled },
-    { name: 'Completed', value: stats.appointmentStats.completed },
-    { name: 'Cancelled', value: stats.appointmentStats.cancelled },
+    { name: t('appointmentStatus.pending'), value: stats.appointmentStats.pending },
+    { name: t('appointmentStatus.scheduled'), value: stats.appointmentStats.scheduled },
+    { name: t('appointmentStatus.completed'), value: stats.appointmentStats.completed },
+    { name: t('appointmentStatus.cancelled'), value: stats.appointmentStats.cancelled },
   ] : [];
 
   return (
@@ -125,17 +127,17 @@ export default function AdminDashboard() {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-black">S</div>
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-100 font-bold uppercase tracking-widest text-[10px]">Administrator</Badge>
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-100 font-bold uppercase tracking-widest text-[10px]">{t('header.badge')}</Badge>
               </div>
               <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-                Command <span className="text-blue-600">Center</span>
+                {t('header.title')} <span className="text-blue-600">{t('header.subtitle')}</span>
               </h1>
-              <p className="text-slate-500 font-medium">Monitoring Sunrise Hospital performance and operations</p>
+              <p className="text-slate-500 font-medium">{t('header.description')}</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative group">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
-                <Input placeholder="Search everything..." className="pl-10 w-64 rounded-2xl bg-white border-slate-200 h-12 focus:ring-blue-600 transition-all shadow-sm" />
+                <Input placeholder={t('header.searchPlaceholder')} className="pl-10 w-64 rounded-2xl bg-white border-slate-200 h-12 focus:ring-blue-600 transition-all shadow-sm" />
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="icon" className="rounded-2xl bg-white border-slate-200 h-12 w-12 shadow-sm hover:bg-slate-50">
@@ -147,7 +149,7 @@ export default function AdminDashboard() {
               </div>
               <div className="h-8 w-[1px] bg-slate-200 mx-2 hidden md:block" />
               <Button className="rounded-2xl h-12 px-6 shadow-xl shadow-blue-600/20 bg-blue-600 hover:bg-blue-700 font-bold">
-                <TrendingUp className="w-4 h-4 mr-2" /> Export Analytics
+                <TrendingUp className="w-4 h-4 mr-2" /> {t('header.exportButton')}
               </Button>
             </div>
           </div>
@@ -155,10 +157,10 @@ export default function AdminDashboard() {
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {[
-              { label: 'Total Patients', value: stats?.totalUsers || 0, icon: Users, trend: '+12%', isUp: true, color: 'blue' },
-              { label: 'Total Appointments', value: stats?.totalAppointments || 0, icon: Calendar, trend: '+8%', isUp: true, color: 'emerald' },
-              { label: 'Platform Revenue', value: `$${((stats?.totalRevenue || 0) / 1000).toFixed(1)}K`, icon: DollarSign, trend: '-2%', isUp: false, color: 'amber' },
-              { label: 'Doctor Availability', value: stats?.totalDoctors || 0, icon: Stethoscope, trend: '+5%', isUp: true, color: 'violet' },
+              { label: t('metrics.totalPatients'), value: stats?.totalUsers || 0, icon: Users, trend: '+12%', isUp: true, color: 'blue' },
+              { label: t('metrics.totalAppointments'), value: stats?.totalAppointments || 0, icon: Calendar, trend: '+8%', isUp: true, color: 'emerald' },
+              { label: t('metrics.platformRevenue'), value: `$${((stats?.totalRevenue || 0) / 1000).toFixed(1)}K`, icon: DollarSign, trend: '-2%', isUp: false, color: 'amber' },
+              { label: t('metrics.doctorAvailability'), value: stats?.totalDoctors || 0, icon: Stethoscope, trend: '+5%', isUp: true, color: 'violet' },
             ].map((metric, i) => (
               <Card key={i} className="border-0 shadow-sm hover:shadow-md transition-all overflow-hidden relative group">
                 <CardContent className="p-6">
@@ -184,12 +186,12 @@ export default function AdminDashboard() {
             <Card className="lg:col-span-2 border-0 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle>Revenue Analytics</CardTitle>
-                  <CardDescription>Monthly revenue growth and projections</CardDescription>
+                  <CardTitle>{t('charts.revenueAnalytics.title')}</CardTitle>
+                  <CardDescription>{t('charts.revenueAnalytics.description')}</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Badge className="bg-blue-100 text-blue-700 border-0">Monthly</Badge>
-                  <Badge variant="outline" className="text-slate-400">Yearly</Badge>
+                  <Badge className="bg-blue-100 text-blue-700 border-0">{t('charts.revenueAnalytics.monthly')}</Badge>
+                  <Badge variant="outline" className="text-slate-400">{t('charts.revenueAnalytics.yearly')}</Badge>
                 </div>
               </CardHeader>
               <CardContent className="h-[350px]">
@@ -221,8 +223,8 @@ export default function AdminDashboard() {
             {/* Appointment Distribution */}
             <Card className="border-0 shadow-sm">
               <CardHeader>
-                <CardTitle>Appointment Status</CardTitle>
-                <CardDescription>Distribution by current state</CardDescription>
+                <CardTitle>{t('charts.appointmentStatus.title')}</CardTitle>
+                <CardDescription>{t('charts.appointmentStatus.description')}</CardDescription>
               </CardHeader>
               <CardContent className="h-[300px]">
                 {isLoading ? (
@@ -266,12 +268,12 @@ export default function AdminDashboard() {
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-1.5 w-full" />
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
-                <CardTitle className="text-xl font-black">Weekly Engagement</CardTitle>
-                <CardDescription>Daily appointment volume for the current week</CardDescription>
+                <CardTitle className="text-xl font-black">{t('charts.weeklyEngagement.title')}</CardTitle>
+                <CardDescription>{t('charts.weeklyEngagement.description')}</CardDescription>
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold">
-                  <Activity size={14} /> Peak: Friday
+                  <Activity size={14} /> {t('charts.weeklyEngagement.peak')}
                 </div>
               </div>
             </CardHeader>
@@ -333,14 +335,14 @@ export default function AdminDashboard() {
         </div>
 
           {/* Operational Management */}
-          <h2 className="text-2xl font-black text-slate-900 mb-6">Operations Management</h2>
+          <h2 className="text-2xl font-black text-slate-900 mb-6">{t('operations.title')}</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {[
-              { title: 'User Base', desc: 'Patients and medical staff', link: '/admin/users', icon: UserCheck, color: 'blue' },
-              { title: 'Specialists', desc: 'Doctor profiles & schedules', link: '/admin/doctors', icon: Stethoscope, color: 'emerald' },
-              { title: 'Specialty Hub', desc: 'Medical departments & units', link: '/admin/specialties', icon: Activity, color: 'indigo' },
-              { title: 'Appointments', desc: 'Booking logs & status', link: '/admin/appointments', icon: Calendar, color: 'amber' },
-              { title: 'Analytics', desc: 'Detailed business reports', link: '/admin/statistics', icon: Activity, color: 'rose' },
+              { title: t('operations.modules.userBase.title'), desc: t('operations.modules.userBase.description'), link: '/admin/users', icon: UserCheck, color: 'blue' },
+              { title: t('operations.modules.specialists.title'), desc: t('operations.modules.specialists.description'), link: '/admin/doctors', icon: Stethoscope, color: 'emerald' },
+              { title: t('operations.modules.specialtyHub.title'), desc: t('operations.modules.specialtyHub.description'), link: '/admin/specialties', icon: Activity, color: 'indigo' },
+              { title: t('operations.modules.appointments.title'), desc: t('operations.modules.appointments.description'), link: '/admin/appointments', icon: Calendar, color: 'amber' },
+              { title: t('operations.modules.analytics.title'), desc: t('operations.modules.analytics.description'), link: '/admin/statistics', icon: Activity, color: 'rose' },
             ].map((item, i) => (
               <Card key={i} className="border-0 shadow-sm hover:translate-y-[-4px] transition-all group cursor-pointer">
                 <Link href={item.link}>
@@ -351,7 +353,7 @@ export default function AdminDashboard() {
                     <h3 className="text-lg font-bold text-slate-900 mb-1">{item.title}</h3>
                     <p className="text-sm text-slate-500 mb-4">{item.desc}</p>
                     <div className="flex items-center text-primary font-bold text-sm">
-                      Access Module <ArrowRight size={16} className="ml-2 group-hover:translate-x-2 transition-transform" />
+                      {t('operations.accessModule')} <ArrowRight size={16} className="ml-2 group-hover:translate-x-2 transition-transform" />
                     </div>
                   </CardContent>
                 </Link>

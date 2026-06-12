@@ -1,0 +1,94 @@
+{
+  "title": "Doctors",
+  "doctors": "Doctors",
+  "findDoctor": "Find Doctor",
+  "viewProfile": "View Profile",
+  "bookNow": "Book Now",
+  "profile": {
+    "title": "Doctor Profile",
+    "name": "Name",
+    "specialty": "Specialty",
+    "hospital": "Hospital",
+    "experience": "Experience",
+    "education": "Education",
+    "languages": "Languages",
+    "rating": "Rating",
+    "reviews": "Reviews",
+    "consultationFee": "Consultation Fee",
+    "availability": "Availability",
+    "about": "About",
+    "qualifications": "Qualifications",
+    "awards": "Awards"
+  },
+  "schedule": {
+    "title": "Work Schedule",
+    "available": "Available",
+    "notAvailable": "Not Available",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "viewSchedule": "View Schedule",
+    "updateSchedule": "Update Schedule"
+  },
+  "dashboard": {
+    "title": "Doctor Dashboard",
+    "appointments": "Appointments",
+    "patients": "Patients",
+    "records": "Medical Records",
+    "schedule": "Schedule",
+    "statistics": "Statistics",
+    "todayAppointments": "Today's Appointments",
+    "pendingApprovals": "Pending Approvals",
+    "completedToday": "Completed Today"
+  },
+  "appointments": {
+    "title": "Manage Appointments",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "approve": "Approve",
+    "reject": "Reject",
+    "complete": "Complete",
+    "viewPatient": "View Patient",
+    "addRecord": "Add Record"
+  },
+  "medicalRecords": {
+    "title": "Medical Records",
+    "create": "Create New Record",
+    "diagnosis": "Diagnosis",
+    "treatment": "Treatment",
+    "prescription": "Prescription",
+    "notes": "Notes",
+    "symptoms": "Symptoms",
+    "vitalSigns": "Vital Signs",
+    "bloodPressure": "Blood Pressure",
+    "heartRate": "Heart Rate",
+    "temperature": "Temperature",
+    "weight": "Weight",
+    "height": "Height",
+    "save": "Save Record",
+    "success": "Record saved successfully",
+    "error": "Failed to save record"
+  },
+  "specialty": {
+    "cardiology": "Cardiology",
+    "dermatology": "Dermatology",
+    "neurology": "Neurology",
+    "orthopedics": "Orthopedics",
+    "pediatrics": "Pediatrics",
+    "psychiatry": "Psychiatry",
+    "general": "General Practice",
+    "dentistry": "Dentistry"
+  },
+  "messages": {
+    "noDoctors": "No doctors found",
+    "noAppointments": "No appointments",
+    "approveSuccess": "Appointment approved successfully",
+    "rejectSuccess": "Appointment rejected successfully",
+    "completeSuccess": "Appointment completed successfully"
+  },
+  "validation": {
+    "diagnosisRequired": "Please enter diagnosis",
+    "treatmentRequired": "Please enter treatment method"
+  }
+}

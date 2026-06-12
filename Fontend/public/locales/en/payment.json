@@ -1,0 +1,72 @@
+{
+  "title": "Payment",
+  "payment": "Payment",
+  "paymentMethod": "Payment Method",
+  "paymentStatus": "Payment Status",
+  "amount": "Amount",
+  "transactionId": "Transaction ID",
+  "methods": {
+    "title": "Select Payment Method",
+    "vietqr": "VietQR",
+    "vnpay": "VNPay",
+    "momo": "MoMo",
+    "creditCard": "Credit Card",
+    "cash": "Cash",
+    "bankTransfer": "Bank Transfer"
+  },
+  "vietqr": {
+    "title": "VietQR Payment",
+    "scan": "Scan QR code to pay",
+    "bankAccount": "Bank Account",
+    "accountNumber": "Account Number",
+    "accountName": "Account Name",
+    "amount": "Amount",
+    "content": "Transfer Content",
+    "instructions": "Payment Instructions",
+    "step1": "Open your banking app",
+    "step2": "Scan QR code or enter transfer information",
+    "step3": "Confirm payment",
+    "note": "Note: Please keep the transfer content unchanged"
+  },
+  "status": {
+    "pending": "Processing",
+    "success": "Success",
+    "failed": "Failed",
+    "refunded": "Refunded",
+    "paid": "Paid",
+    "unpaid": "Unpaid"
+  },
+  "actions": {
+    "pay": "Pay",
+    "payNow": "Pay Now",
+    "cancel": "Cancel",
+    "refund": "Refund",
+    "viewReceipt": "View Receipt",
+    "downloadReceipt": "Download Receipt"
+  },
+  "details": {
+    "title": "Payment Details",
+    "appointmentId": "Appointment ID",
+    "patientName": "Patient Name",
+    "doctorName": "Doctor Name",
+    "consultationFee": "Consultation Fee",
+    "discount": "Discount",
+    "total": "Total",
+    "paymentDate": "Payment Date",
+    "paymentTime": "Payment Time"
+  },
+  "messages": {
+    "paymentSuccess": "Payment successful",
+    "paymentFailed": "Payment failed",
+    "paymentPending": "Processing payment",
+    "refundSuccess": "Refund successful",
+    "selectMethod": "Please select payment method",
+    "confirmPayment": "Confirm payment",
+    "processingPayment": "Processing...",
+    "alreadyPaid": "Appointment already paid"
+  },
+  "validation": {
+    "methodRequired": "Please select payment method",
+    "amountInvalid": "Invalid amount"
+  }
+}

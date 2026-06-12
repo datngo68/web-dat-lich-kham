@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
  * Spring Data JPA repository for the Doctor entity.
  */
 @Repository
-public interface DoctorRepository extends JpaRepository<Doctor, Long>, JpaSpecificationExecutor<Doctor> {}
+public interface DoctorRepository extends JpaRepository<Doctor, Long>, JpaSpecificationExecutor<Doctor> {
+    java.util.Optional<Doctor> findByEmail(String email);
+}

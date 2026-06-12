@@ -7,8 +7,10 @@ import hospital.repository.AppointmentRepository;
 import hospital.repository.PaymentRepository;
 import hospital.repository.UserRepository;
 import hospital.security.SecurityUtils;
+import hospital.service.VietQRService;
 import hospital.service.dto.PageResponseDTO;
 import hospital.service.dto.PaginationDTO;
+import hospital.service.dto.VietQRPaymentDTO;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,15 +30,18 @@ public class PaymentResource {
     private final PaymentRepository paymentRepository;
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
+    private final VietQRService vietQRService;
 
     public PaymentResource(
         PaymentRepository paymentRepository,
         AppointmentRepository appointmentRepository,
-        UserRepository userRepository
+        UserRepository userRepository,
+        VietQRService vietQRService
     ) {
         this.paymentRepository = paymentRepository;
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
+        this.vietQRService = vietQRService;
     }
 
     @PostMapping("/payments/process")
@@ -62,6 +67,38 @@ public class PaymentResource {
         paymentRepository.save(payment);
         appointment.setPaymentStatus("PAID");
         appointmentRepository.save(appointment);
+        return ResponseEntity.ok(toMap(payment));
+    }
+
+    @PostMapping("/payments/vietqr/generate")
+    public ResponseEntity<VietQRPaymentDTO> generateVietQRPayment(@RequestBody VietQRGenerateRequest request) {
+        User user = currentUser();
+        Appointment appointment = appointmentRepository
+            .findById(request.appointmentId())
+            .orElseThrow(() -> new IllegalStateException("Appointment not found"));
+        
+        // Verify appointment belongs to current user
+        if (appointment.getUser() == null || !appointment.getUser().getLogin().equalsIgnoreCase(user.getLogin())) {
+            throw new IllegalStateException("Unauthorized");
+        }
+        
+        VietQRPaymentDTO vietQRPayment = vietQRService.generateQRPayment(request.appointmentId());
+        return ResponseEntity.ok(vietQRPayment);
+    }
+
+    @PostMapping("/payments/vietqr/process")
+    public ResponseEntity<Map<String, Object>> processVietQRPayment(@RequestBody VietQRProcessRequest request) {
+        User user = currentUser();
+        Appointment appointment = appointmentRepository
+            .findById(request.appointmentId())
+            .orElseThrow(() -> new IllegalStateException("Appointment not found"));
+        
+        // Verify appointment belongs to current user
+        if (appointment.getUser() == null || !appointment.getUser().getLogin().equalsIgnoreCase(user.getLogin())) {
+            throw new IllegalStateException("Unauthorized");
+        }
+        
+        Payment payment = vietQRService.processVietQRPayment(request.appointmentId(), request.transactionId());
         return ResponseEntity.ok(toMap(payment));
     }
 
@@ -144,4 +181,8 @@ public class PaymentResource {
         String expiryDate,
         String cvv
     ) {}
+
+    public record VietQRGenerateRequest(Long appointmentId) {}
+
+    public record VietQRProcessRequest(Long appointmentId, String transactionId) {}
 }

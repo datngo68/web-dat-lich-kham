@@ -1,0 +1,110 @@
+{
+  "title": "Appointments",
+  "myAppointments": "My Appointments",
+  "bookAppointment": "Book Appointment",
+  "viewDetails": "View Details",
+  "upcoming": "Upcoming",
+  "past": "Past",
+  "all": "All",
+  "booking": {
+    "title": "Book Appointment",
+    "selectDoctor": "Select Doctor",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "selectSlot": "Select Time Slot",
+    "reason": "Reason for Visit",
+    "symptoms": "Symptoms",
+    "notes": "Additional Notes",
+    "consultationType": "Consultation Type",
+    "online": "Online",
+    "offline": "In-person",
+    "video": "Video Call",
+    "phone": "Phone",
+    "fee": "Consultation Fee",
+    "confirm": "Confirm Booking",
+    "success": "Appointment booked successfully",
+    "error": "Failed to book appointment"
+  },
+  "details": {
+    "title": "Appointment Details",
+    "appointmentId": "Appointment ID",
+    "doctor": "Doctor",
+    "patient": "Patient",
+    "date": "Date",
+    "time": "Time",
+    "status": "Status",
+    "reason": "Reason",
+    "notes": "Notes",
+    "consultationType": "Type",
+    "fee": "Fee",
+    "paymentStatus": "Payment"
+  },
+  "status": {
+    "pending": "Pending Confirmation",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "rescheduled": "Rescheduled"
+  },
+  "actions": {
+    "reschedule": "Reschedule",
+    "cancel": "Cancel",
+    "complete": "Complete",
+    "review": "Review",
+    "viewRecord": "View Record",
+    "pay": "Pay"
+  },
+  "reschedule": {
+    "title": "Reschedule Appointment",
+    "newDate": "New Date",
+    "newTime": "New Time",
+    "reason": "Reason for Rescheduling",
+    "confirm": "Confirm Reschedule",
+    "success": "Appointment rescheduled successfully",
+    "error": "Failed to reschedule appointment"
+  },
+  "cancel": {
+    "title": "Cancel Appointment",
+    "reason": "Reason for Cancellation",
+    "confirm": "Confirm Cancellation",
+    "warning": "Are you sure you want to cancel this appointment?",
+    "success": "Appointment cancelled successfully",
+    "error": "Failed to cancel appointment"
+  },
+  "review": {
+    "title": "Review Appointment",
+    "rating": "Rating",
+    "comment": "Comment",
+    "submit": "Submit Review",
+    "success": "Review submitted successfully",
+    "error": "Failed to submit review"
+  },
+  "payment": {
+    "title": "Payment",
+    "status": {
+      "paid": "Paid",
+      "unpaid": "Unpaid",
+      "pending": "Pending",
+      "refunded": "Refunded"
+    },
+    "payNow": "Pay Now",
+    "amount": "Amount",
+    "method": "Method"
+  },
+  "messages": {
+    "noAppointments": "You don't have any appointments",
+    "bookNow": "Book now",
+    "slotTaken": "This time slot is already booked",
+    "pastDate": "Cannot book appointment for past date",
+    "cannotCancel": "Cannot cancel this appointment",
+    "cannotReschedule": "Cannot reschedule this appointment",
+    "confirmRequired": "Please wait for doctor's confirmation"
+  },
+  "validation": {
+    "doctorRequired": "Please select a doctor",
+    "dateRequired": "Please select a date",
+    "timeRequired": "Please select a time",
+    "reasonRequired": "Please enter reason for visit",
+    "symptomsRequired": "Please describe symptoms"
+  }
+}

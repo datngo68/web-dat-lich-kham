@@ -1,0 +1,111 @@
+{
+  "appName": "Hệ Thống Đặt Lịch Khám Bệnh",
+  "welcome": "Chào mừng",
+  "hello": "Xin chào",
+  "loading": "Đang tải...",
+  "noData": "Không có dữ liệu",
+  "search": "Tìm kiếm",
+  "filter": "Lọc",
+  "export": "Xuất",
+  "import": "Nhập",
+  "upload": "Tải lên",
+  "download": "Tải xuống",
+  "print": "In",
+  "refresh": "Làm mới",
+  "back": "Quay lại",
+  "next": "Tiếp theo",
+  "previous": "Trước",
+  "submit": "Gửi",
+  "save": "Lưu",
+  "edit": "Sửa",
+  "delete": "Xóa",
+  "view": "Xem",
+  "add": "Thêm",
+  "remove": "Gỡ bỏ",
+  "cancel": "Hủy",
+  "confirm": "Xác nhận",
+  "yes": "Có",
+  "no": "Không",
+  "ok": "Đồng ý",
+  "close": "Đóng",
+  "success": "Thành công",
+  "error": "Lỗi",
+  "warning": "Cảnh báo",
+  "info": "Thông tin",
+  "actions": "Hành động",
+  "status": "Trạng thái",
+  "date": "Ngày",
+  "time": "Giờ",
+  "name": "Tên",
+  "email": "Email",
+  "phone": "Số điện thoại",
+  "address": "Địa chỉ",
+  "description": "Mô tả",
+  "details": "Chi tiết",
+  "home": "Trang chủ",
+  "dashboard": "Bảng điều khiển",
+  "profile": "Hồ sơ",
+  "settings": "Cài đặt",
+  "logout": "Đăng xuất",
+  "login": "Đăng nhập",
+  "register": "Đăng ký",
+  "nav": {
+    "home": "Trang chủ",
+    "doctors": "Bác sĩ",
+    "appointments": "Lịch khám",
+    "profile": "Hồ sơ",
+    "admin": "Quản trị"
+  },
+  "footer": {
+    "about": "Về chúng tôi",
+    "contact": "Liên hệ",
+    "privacy": "Chính sách bảo mật",
+    "terms": "Điều khoản sử dụng"
+  },
+  "time": {
+    "morning": "Buổi sáng",
+    "afternoon": "Buổi chiều",
+    "evening": "Buổi tối",
+    "night": "Buổi đêm"
+  },
+  "date": {
+    "today": "Hôm nay",
+    "yesterday": "Hôm qua",
+    "tomorrow": "Ngày mai"
+  },
+  "days": {
+    "monday": "Thứ Hai",
+    "tuesday": "Thứ Ba",
+    "wednesday": "Thứ Tư",
+    "thursday": "Thứ Năm",
+    "friday": "Thứ Sáu",
+    "saturday": "Thứ Bảy",
+    "sunday": "Chủ Nhật"
+  },
+  "status": {
+    "pending": "Đang chờ",
+    "confirmed": "Đã xác nhận",
+    "completed": "Hoàn thành",
+    "cancelled": "Đã hủy",
+    "active": "Đang hoạt động",
+    "inactive": "Không hoạt động"
+  },
+  "gender": {
+    "male": "Nam",
+    "female": "Nữ",
+    "other": "Khác"
+  },
+  "roles": {
+    "admin": "Quản trị viên",
+    "doctor": "Bác sĩ",
+    "user": "Người dùng"
+  },
+  "messages": {
+    "success": "Thao tác thành công",
+    "error": "Đã xảy ra lỗi",
+    "confirmDelete": "Bạn có chắc chắn muốn xóa không?",
+    "noResults": "Không tìm thấy kết quả",
+    "networkError": "Lỗi kết nối mạng",
+    "tryAgain": "Vui lòng thử lại"
+  }
+}

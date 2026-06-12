@@ -1,0 +1,94 @@
+{
+  "title": "Bác sĩ",
+  "doctors": "Bác sĩ",
+  "findDoctor": "Tìm bác sĩ",
+  "viewProfile": "Xem hồ sơ",
+  "bookNow": "Đặt lịch ngay",
+  "profile": {
+    "title": "Hồ sơ bác sĩ",
+    "name": "Họ tên",
+    "specialty": "Chuyên khoa",
+    "hospital": "Bệnh viện",
+    "experience": "Kinh nghiệm",
+    "education": "Học vấn",
+    "languages": "Ngôn ngữ",
+    "rating": "Đánh giá",
+    "reviews": "Nhận xét",
+    "consultationFee": "Phí khám",
+    "availability": "Lịch trống",
+    "about": "Giới thiệu",
+    "qualifications": "Bằng cấp",
+    "awards": "Giải thưởng"
+  },
+  "schedule": {
+    "title": "Lịch làm việc",
+    "available": "Có lịch",
+    "notAvailable": "Không có lịch",
+    "morning": "Sáng",
+    "afternoon": "Chiều",
+    "evening": "Tối",
+    "viewSchedule": "Xem lịch",
+    "updateSchedule": "Cập nhật lịch"
+  },
+  "dashboard": {
+    "title": "Bảng điều khiển bác sĩ",
+    "appointments": "Lịch khám",
+    "patients": "Bệnh nhân",
+    "records": "Hồ sơ bệnh án",
+    "schedule": "Lịch làm việc",
+    "statistics": "Thống kê",
+    "todayAppointments": "Lịch khám hôm nay",
+    "pendingApprovals": "Chờ duyệt",
+    "completedToday": "Hoàn thành hôm nay"
+  },
+  "appointments": {
+    "title": "Quản lý lịch khám",
+    "pending": "Chờ duyệt",
+    "confirmed": "Đã xác nhận",
+    "completed": "Đã hoàn thành",
+    "approve": "Duyệt",
+    "reject": "Từ chối",
+    "complete": "Hoàn thành",
+    "viewPatient": "Xem bệnh nhân",
+    "addRecord": "Thêm hồ sơ"
+  },
+  "medicalRecords": {
+    "title": "Hồ sơ bệnh án",
+    "create": "Tạo hồ sơ mới",
+    "diagnosis": "Chẩn đoán",
+    "treatment": "Điều trị",
+    "prescription": "Đơn thuốc",
+    "notes": "Ghi chú",
+    "symptoms": "Triệu chứng",
+    "vitalSigns": "Dấu hiệu sinh tồn",
+    "bloodPressure": "Huyết áp",
+    "heartRate": "Nhịp tim",
+    "temperature": "Nhiệt độ",
+    "weight": "Cân nặng",
+    "height": "Chiều cao",
+    "save": "Lưu hồ sơ",
+    "success": "Lưu hồ sơ thành công",
+    "error": "Lưu hồ sơ thất bại"
+  },
+  "specialty": {
+    "cardiology": "Tim mạch",
+    "dermatology": "Da liễu",
+    "neurology": "Thần kinh",
+    "orthopedics": "Chỉnh hình",
+    "pediatrics": "Nhi khoa",
+    "psychiatry": "Tâm thần",
+    "general": "Đa khoa",
+    "dentistry": "Nha khoa"
+  },
+  "messages": {
+    "noDoctors": "Không tìm thấy bác sĩ",
+    "noAppointments": "Không có lịch khám",
+    "approveSuccess": "Duyệt lịch thành công",
+    "rejectSuccess": "Từ chối lịch thành công",
+    "completeSuccess": "Hoàn thành lịch khám"
+  },
+  "validation": {
+    "diagnosisRequired": "Vui lòng nhập chẩn đoán",
+    "treatmentRequired": "Vui lòng nhập phương pháp điều trị"
+  }
+}

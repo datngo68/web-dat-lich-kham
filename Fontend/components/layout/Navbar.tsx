@@ -8,6 +8,7 @@ import { useNotificationStore } from '@/stores/notificationStore';
 import { Button } from '@/components/ui/button';
 import { Menu, X, LogOut, Bell, Calendar, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export function Navbar() {
   const router = useRouter();
@@ -60,6 +61,9 @@ export function Navbar() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
+          {/* Language Switcher - Available for everyone */}
+          <LanguageSwitcher />
+          
           {isAuthenticated ? (
             <>
               <Link href="/dashboard" className="text-foreground/70 hover:text-primary font-medium transition-colors">
@@ -188,6 +192,11 @@ export function Navbar() {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden border-t bg-card/95 p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
+          {/* Language Switcher - Mobile */}
+          <div className="flex justify-center pb-2 border-b border-slate-100">
+            <LanguageSwitcher />
+          </div>
+          
           {isAuthenticated ? (
             <>
               <div className="px-4 py-3 bg-slate-50 rounded-xl mb-4 border border-slate-100">
