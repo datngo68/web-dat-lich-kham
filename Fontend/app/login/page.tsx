@@ -9,9 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { LogIn } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useTranslation('auth');
   const { login, isLoading, error, clearError } = useAuthStore();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -38,8 +40,8 @@ export default function LoginPage() {
     clearError();
 
     const errors: { [key: string]: string } = {};
-    if (!formData.email) errors.email = 'Email or username is required';
-    if (!formData.password) errors.password = 'Password is required';
+    if (!formData.email) errors.email = t('validation.identifierRequired');
+    if (!formData.password) errors.password = t('validation.passwordRequired');
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
@@ -55,8 +57,8 @@ export default function LoginPage() {
       console.log('Login successful');
 
       toast({
-        title: 'Success',
-        description: 'Logged in successfully',
+        title: t('login.success'),
+        description: t('messages.loginSuccess'),
       });
       const currentUser = useAuthStore.getState().user;
       const role = currentUser?.role?.toUpperCase();
@@ -71,9 +73,9 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       console.error('Login error detail:', err);
-      const errorMessage = err.response?.data?.message || err.message || 'Please check your credentials';
+      const errorMessage = err.response?.data?.message || err.message || t('messages.checkCredentials');
       toast({
-        title: 'Login Failed',
+        title: t('login.error'),
         description: errorMessage,
         variant: 'destructive',
       });
@@ -99,20 +101,20 @@ export default function LoginPage() {
           <h1 className="text-4xl font-black text-slate-900 tracking-tight">
             Sunrise <span className="text-primary">Hospital</span>
           </h1>
-          <p className="text-slate-500 font-medium">Welcome back to your health companion</p>
+          <p className="text-slate-500 font-medium">{t('login.brandSubtitle')}</p>
         </div>
 
         {/* Login Card */}
         <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-xl rounded-[2rem] overflow-hidden">
           <CardHeader className="space-y-1 pb-2">
-            <CardTitle className="text-2xl font-black text-slate-900">Sign In</CardTitle>
-            <CardDescription className="text-slate-500 font-medium">Enter your credentials to access your portal</CardDescription>
+            <CardTitle className="text-2xl font-black text-slate-900">{t('login.cardTitle')}</CardTitle>
+            <CardDescription className="text-slate-500 font-medium">{t('login.cardSubtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-bold text-slate-700 ml-1">
-                  Username or Email
+                  {t('login.identifier')}
                 </label>
                 <Input
                   type="text"
@@ -175,9 +177,9 @@ export default function LoginPage() {
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Signing in...
+                    {t('login.signingIn')}
                   </div>
-                ) : 'Continue'}
+                ) : t('login.continue')}
               </Button>
 
               <div className="relative my-6">
@@ -185,7 +187,7 @@ export default function LoginPage() {
                   <div className="w-full border-t border-slate-100"></div>
                 </div>
                 <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-black text-slate-400">
-                  <span className="bg-white px-3">New to Sunrise?</span>
+                  <span className="bg-white px-3">{t('login.newUser')}</span>
                 </div>
               </div>
 
@@ -195,7 +197,7 @@ export default function LoginPage() {
                 className="w-full border-slate-200 h-12 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all"
                 onClick={() => router.push('/register')}
               >
-                Create an account
+                {t('login.createAccount')}
               </Button>
             </form>
           </CardContent>
@@ -204,9 +206,9 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="text-center text-sm">
           <p className="text-slate-500 font-medium">
-            By signing in, you agree to our{' '}
+            {t('login.termsPrefix')}{' '}
             <Link href="#" className="font-bold text-slate-900 hover:underline">
-              Terms of Service
+              {t('login.terms')}
             </Link>
           </p>
         </div>

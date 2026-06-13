@@ -177,5 +177,45 @@
     "updateError": "Cập nhật thất bại",
     "createSuccess": "Tạo mới thành công",
     "createError": "Tạo mới thất bại"
+  },
+  "sidebar": {
+    "collapse": "Thu gọn",
+    "expand": "Mở rộng"
+  },
+  "pendingApprovals": {
+    "title": "Chờ phê duyệt",
+    "description": "Lịch khám cần xử lý",
+    "approve": "Duyệt",
+    "reject": "Từ chối",
+    "noData": "Không có lịch khám chờ duyệt",
+    "patient": "Bệnh nhân",
+    "doctor": "Bác sĩ",
+    "date": "Ngày khám",
+    "actions": "Thao tác"
+  },
+  "recentActivities": {
+    "title": "Hoạt động gần đây",
+    "user": "Người dùng",
+    "action": "Hành động",
+    "entity": "Đối tượng",
+    "time": "Thời gian",
+    "noData": "Chưa có hoạt động nào",
+    "actions": {
+      "created": "Tạo mới",
+      "updated": "Cập nhật",
+      "deleted": "Xóa",
+      "approved": "Phê duyệt",
+      "rejected": "Từ chối",
+      "registered": "Đăng ký",
+      "booked": "Đặt lịch"
+    }
+  },
+  "topBar": {
+    "search": "Tìm kiếm...",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất",
+    "notifications": "Thông báo",
+    "noNotifications": "Không có thông báo mới"
   }
 }

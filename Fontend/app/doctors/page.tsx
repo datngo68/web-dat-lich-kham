@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useDoctorStore } from '@/stores/doctorStore';
@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Star, MapPin, Award, Stethoscope, Search } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 export default function DoctorsPage() {
+  const { t } = useTranslation(['doctor', 'common']);
   const { doctors, isLoading, searchDoctors } = useDoctorStore();
   const [specialization, setSpecialization] = useState('');
   const [minRating, setMinRating] = useState(0);
@@ -41,10 +43,10 @@ export default function DoctorsPage() {
           {/* Header */}
           <div className="mb-12">
             <h1 className="text-5xl font-bold text-foreground mb-3">
-              Find Your Perfect Doctor
+              {t('findDoctor')}
             </h1>
             <p className="text-xl text-foreground/60 max-w-2xl">
-              Search and book appointments with qualified healthcare professionals
+              {t('search.subtitle')}
             </p>
           </div>
 
@@ -59,7 +61,7 @@ export default function DoctorsPage() {
                     </label>
                     <input
                       type="text"
-                      placeholder="Doctor name..."
+                      placeholder={t('search.placeholder')}
                       value={keyword}
                       onChange={(e) => setKeyword(e.target.value)}
                       className="w-full px-4 py-3 border border-border rounded-lg bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary transition"
@@ -68,14 +70,14 @@ export default function DoctorsPage() {
 
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-foreground block">
-                      Medical Specialty
+                      {t('profile.specialty')}
                     </label>
                     <select
                       value={specialization}
                       onChange={(e) => setSpecialization(e.target.value)}
                       className="w-full px-4 py-3 border border-border rounded-lg bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary transition"
                     >
-                      <option value="">All Specialties</option>
+                      <option value="">{t('search.allSpecialties')}</option>
                       {specializations.map((spec) => (
                         <option key={spec} value={spec}>
                           {spec}
@@ -86,7 +88,7 @@ export default function DoctorsPage() {
 
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-foreground block">
-                      Minimum Rating
+                      {t('search.minimumRating')}
                     </label>
                     <div className="flex items-center gap-2">
                       <input
@@ -113,7 +115,7 @@ export default function DoctorsPage() {
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-3"
                     >
                       <Search className="w-4 h-4 mr-2" />
-                      Search Doctors
+                      {t('search.button')}
                     </Button>
                   </div>
                 </div>
@@ -125,14 +127,14 @@ export default function DoctorsPage() {
           {isLoading ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-              <p className="text-foreground/60 mt-4">Loading doctors...</p>
+              <p className="text-foreground/60 mt-4">{t('search.loading')}</p>
             </div>
           ) : doctors.length === 0 ? (
             <Card className="border-0 shadow-md bg-muted/30">
               <CardContent className="p-12 text-center">
                 <Stethoscope className="w-16 h-16 mx-auto text-muted-foreground mb-4 opacity-50" />
                 <p className="text-foreground/60 text-lg">
-                  No doctors found. Try adjusting your filters.
+                  {t('search.noResults')}
                 </p>
               </CardContent>
             </Card>
@@ -163,7 +165,7 @@ export default function DoctorsPage() {
                           <div className="flex items-start gap-3">
                             <Award className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                             <div>
-                              <p className="text-foreground/60 text-xs">Qualification</p>
+                              <p className="text-foreground/60 text-xs">{t('profile.qualifications')}</p>
                               <p className="font-medium text-foreground">{doctor.qualification}</p>
                             </div>
                           </div>
@@ -173,8 +175,8 @@ export default function DoctorsPage() {
                           <div className="flex items-start gap-3">
                             <Stethoscope className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
                             <div>
-                              <p className="text-foreground/60 text-xs">Experience</p>
-                              <p className="font-medium text-foreground">{doctor.yearsOfExperience} years</p>
+                              <p className="text-foreground/60 text-xs">{t('profile.experience')}</p>
+                              <p className="font-medium text-foreground">{doctor.yearsOfExperience} {t('search.years')}</p>
                             </div>
                           </div>
                         )}
@@ -183,7 +185,7 @@ export default function DoctorsPage() {
                           <div className="flex items-start gap-3">
                             <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
                             <div>
-                              <p className="text-foreground/60 text-xs">Consultation Fee</p>
+                              <p className="text-foreground/60 text-xs">{t('profile.consultationFee')}</p>
                               <p className="font-medium text-foreground">${doctor.consultationFee}</p>
                             </div>
                           </div>
@@ -213,7 +215,7 @@ export default function DoctorsPage() {
 
                       <Link href={`/doctors/${doctor.id}`} className="block">
                         <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 mt-2">
-                          View Profile & Book
+                          {t('search.viewAndBook')}
                         </Button>
                       </Link>
                     </div>
@@ -227,3 +229,4 @@ export default function DoctorsPage() {
       </>
     );
   }
+

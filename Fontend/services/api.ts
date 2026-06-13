@@ -39,9 +39,8 @@ class ApiService {
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
             return this.client(originalRequest);
           } catch (refreshError) {
-            Cookie.remove('accessToken');
-            Cookie.remove('refreshToken');
-            window.location.href = '/login';
+            Cookie.remove('accessToken', { path: '/' });
+            Cookie.remove('refreshToken', { path: '/' });
             return Promise.reject(refreshError);
           } finally {
             this.refreshTokenPromise = null;
@@ -57,7 +56,7 @@ class ApiService {
     if (!refreshToken) throw new Error('No refresh token available');
     const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`, { refreshToken });
     const { token } = response.data;
-    Cookie.set('accessToken', token);
+    Cookie.set('accessToken', token, { path: '/', sameSite: 'lax' });
     return token;
   }
 
@@ -92,8 +91,8 @@ class ApiService {
     if (!token && response.headers.authorization) {
       token = response.headers.authorization.replace('Bearer ', '');
     }
-    if (token) Cookie.set('accessToken', token);
-    if (data.refreshToken) Cookie.set('refreshToken', data.refreshToken);
+    if (token) Cookie.set('accessToken', token, { path: '/', sameSite: 'lax' });
+    if (data.refreshToken) Cookie.set('refreshToken', data.refreshToken, { path: '/', sameSite: 'lax' });
     return data;
   }
 
@@ -201,7 +200,7 @@ class ApiService {
 
   async createMedicalRecord(data: {
     appointmentId: number;
-    doctorId: number;
+    doctorId?: number;
     diagnosis: string;
     treatment: string;
     notes: string;
@@ -209,6 +208,26 @@ class ApiService {
   }) {
     const res = await this.client.post('/api/medical-records', data);
     return res.data;
+  }
+
+  async getDoctorAppointments(params?: any) {
+    return (await this.client.get('/api/doctor/appointments', { params })).data;
+  }
+
+  async confirmDoctorAppointment(id: string | number) {
+    return (await this.client.put(`/api/doctor/appointments/${id}/confirm`)).data;
+  }
+
+  async completeDoctorAppointment(id: string | number) {
+    return (await this.client.put(`/api/doctor/appointments/${id}/complete`)).data;
+  }
+
+  async createDoctorMedicalRecord(data: { appointmentId: number; diagnosis: string; treatment: string; notes: string; prescription?: string }) {
+    return (await this.client.post('/api/doctor/medical-records', data)).data;
+  }
+
+  async getDoctorStatistics() {
+    return (await this.client.get('/api/doctor/statistics')).data;
   }
 
   // Doctor & Schedule endpoints
@@ -220,8 +239,12 @@ class ApiService {
     return (await this.client.get(`/api/doctors/${id}`)).data;
   }
 
-  async getDoctorSlots(doctorId: string, params: any) {
-    const { date } = params; // Expecting YYYY-MM-DD
+  async getDoctorReviews(id: string) {
+    return (await this.client.get(`/api/doctors/${id}/reviews`)).data;
+  }
+
+  async getDoctorSlots(doctorId: string, params: any, endDate?: string) {
+    const date = typeof params === 'string' ? params : params.date; // Expecting YYYY-MM-DD
 
     try {
       console.log(`Fetching schedule for Doctor ID: ${doctorId} on Date: ${date}`);
@@ -266,6 +289,18 @@ class ApiService {
 
   async getHospitals() {
     return (await this.client.get('/api/hospitals')).data;
+  }
+
+  async createHospital(data: any) {
+    return (await this.client.post('/api/admin/hospitals', data)).data;
+  }
+
+  async updateHospital(id: string | number, data: any) {
+    return (await this.client.put(`/api/admin/hospitals/${id}`, data)).data;
+  }
+
+  async deleteHospital(id: string | number) {
+    return (await this.client.delete(`/api/admin/hospitals/${id}`)).data;
   }
 
   // Specialty Admin endpoints
@@ -322,6 +357,10 @@ class ApiService {
     return (await this.client.get('/api/appointments', { params })).data;
   }
 
+  async createAdminAppointment(data: any) {
+    return (await this.client.post('/api/admin/appointments', data)).data;
+  }
+
   async getAllAppointments(page = 1, limit = 10, status = '') {
     try {
       return (await this.client.get('/api/admin/appointments', {
@@ -354,6 +393,19 @@ class ApiService {
     
     if (Array.isArray(res)) return mappedData;
     return { ...res, data: mappedData };
+  }
+
+  async createUser(data: any) {
+    const payload = {
+      login: data.login,
+      email: data.email,
+      firstName: data.firstName || '',
+      lastName: data.lastName || '',
+      activated: data.activated ?? true,
+      langKey: data.langKey || 'vi',
+      authorities: data.authorities?.length ? data.authorities : ['ROLE_USER'],
+    };
+    return this.mapUserData((await this.client.post('/api/admin/users', payload)).data);
   }
 
   async getUserById(login: string) {
@@ -593,8 +645,8 @@ class ApiService {
       };
 
       const getRevenueForMonth = (m: number, y: number) => appointments
-        .filter(a => ((a.status || '').toUpperCase() === 'COMPLETED' || (a.status || '').toUpperCase() === 'SUCCESS') && isMatch(a.appointmentDate || a.createdAt, m, y))
-        .reduce((sum, a) => sum + (Number(a.price) || Number(a.doctorPrice) || 50), 0);
+        .filter((a: any) => ((a.status || '').toUpperCase() === 'COMPLETED' || (a.status || '').toUpperCase() === 'SUCCESS') && isMatch(a.appointmentDate || a.createdAt, m, y))
+        .reduce((sum: number, a: any) => sum + (Number(a.price) || Number(a.doctorPrice) || 50), 0);
 
       const curRevVal = getRevenueForMonth(curMonth, curYear);
       const prevRevVal = getRevenueForMonth(prevMonth, prevYear);
@@ -644,6 +696,15 @@ class ApiService {
     const res = await this.client.get(`/api/payments/${paymentId}/status`);
     return res.data;
   }
+
+  async getBankConfiguration() {
+    return (await this.client.get('/api/admin/bank-configuration')).data;
+  }
+
+  async updateBankConfiguration(data: any) {
+    return (await this.client.put('/api/admin/bank-configuration', data)).data;
+  }
 }
 
 export const apiService = new ApiService();
+

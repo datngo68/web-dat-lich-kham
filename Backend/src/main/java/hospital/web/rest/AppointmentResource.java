@@ -70,6 +70,29 @@ public class AppointmentResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(toDto(appointment));
     }
 
+    @PostMapping("/admin/appointments")
+    public ResponseEntity<AppointmentDTO> createAdminAppointment(@RequestBody CreateAdminAppointmentRequest request) {
+        User patient = userRepository.findById(request.patientId()).orElseThrow(() -> new IllegalStateException("Patient not found"));
+        Doctor doctor = doctorRepository.findById(request.doctorId()).orElseThrow(() -> new IllegalStateException("Doctor not found"));
+        Hospital hospital = resolveHospital(request.hospitalId(), doctor);
+        LocalTime requestedTime = LocalTime.parse(request.appointmentTime());
+        ensureSlotAvailable(doctor.getId(), request.appointmentDate(), requestedTime, null);
+
+        Appointment appointment = new Appointment();
+        appointment.setUser(patient);
+        appointment.setDoctor(doctor);
+        appointment.setHospital(hospital);
+        appointment.setAppointmentDate(request.appointmentDate());
+        appointment.setAppointmentTime(requestedTime);
+        appointment.setStatus(AppointmentStatus.PENDING);
+        appointment.setReason(request.reason());
+        appointment.setNotes(request.notes());
+        appointment.setPrice(doctor.getPrice());
+        appointment.setPaymentStatus("UNPAID");
+        appointmentRepository.save(appointment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toDto(appointment));
+    }
+
     @GetMapping("/appointments")
     public ResponseEntity<PageResponseDTO<AppointmentDTO>> listAppointments(
         @RequestParam(defaultValue = "1") int page,
@@ -249,6 +272,16 @@ public class AppointmentResource {
     }
 
     public record CreateAppointmentRequest(
+        Long doctorId,
+        Long hospitalId,
+        LocalDate appointmentDate,
+        String appointmentTime,
+        String reason,
+        String notes
+    ) {}
+
+    public record CreateAdminAppointmentRequest(
+        Long patientId,
         Long doctorId,
         Long hospitalId,
         LocalDate appointmentDate,

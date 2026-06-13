@@ -1,10 +1,13 @@
 package hospital.web.rest;
 
 import hospital.domain.Appointment;
+import hospital.domain.Authority;
 import hospital.domain.Doctor;
 import hospital.domain.Hospital;
 import hospital.domain.Specialty;
+import hospital.domain.User;
 import hospital.repository.AppointmentRepository;
+import hospital.repository.AuthorityRepository;
 import hospital.repository.DoctorRepository;
 import hospital.repository.HospitalRepository;
 import hospital.repository.PaymentRepository;
@@ -23,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminResource {
 
     private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
+    private final PasswordEncoder passwordEncoder;
     private final DoctorRepository doctorRepository;
     private final SpecialtyRepository specialtyRepository;
     private final HospitalRepository hospitalRepository;
@@ -46,6 +52,8 @@ public class AdminResource {
 
     public AdminResource(
         UserRepository userRepository,
+        AuthorityRepository authorityRepository,
+        PasswordEncoder passwordEncoder,
         DoctorRepository doctorRepository,
         SpecialtyRepository specialtyRepository,
         HospitalRepository hospitalRepository,
@@ -53,6 +61,8 @@ public class AdminResource {
         PaymentRepository paymentRepository
     ) {
         this.userRepository = userRepository;
+        this.authorityRepository = authorityRepository;
+        this.passwordEncoder = passwordEncoder;
         this.doctorRepository = doctorRepository;
         this.specialtyRepository = specialtyRepository;
         this.hospitalRepository = hospitalRepository;
@@ -137,12 +147,38 @@ public class AdminResource {
 
     @PostMapping("/doctors")
     public ResponseEntity<Map<String, Object>> createDoctor(@Valid @RequestBody DoctorRequest request) {
+        if (request.email() == null || request.email().isBlank()) {
+            throw new IllegalArgumentException("Email là bắt buộc để tạo tài khoản bác sĩ");
+        }
+        if (request.login() == null || request.login().isBlank()) {
+            throw new IllegalArgumentException("Tên đăng nhập là bắt buộc");
+        }
+        if (request.password() == null || request.password().length() < 6) {
+            throw new IllegalArgumentException("Mật khẩu phải có ít nhất 6 ký tự");
+        }
+        if (userRepository.findOneByLogin(request.login().trim().toLowerCase()).isPresent()) {
+            throw new IllegalArgumentException("Tên đăng nhập đã tồn tại");
+        }
+        if (userRepository.findOneByEmailIgnoreCase(request.email().trim()).isPresent()) {
+            throw new IllegalArgumentException("Email đã được sử dụng");
+        }
+
+        User doctorUser = createDoctorUser(request);
         Doctor doctor = new Doctor();
         applyDoctorRequest(doctor, request);
         Doctor savedDoctor = doctorRepository.save(doctor);
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-            Map.of("message", "Bác sĩ đã được thêm mới", "doctor", doctorDetail(savedDoctor))
-        );
+
+        Map<String, Object> account = new LinkedHashMap<>();
+        account.put("id", doctorUser.getId());
+        account.put("login", doctorUser.getLogin());
+        account.put("email", doctorUser.getEmail());
+        account.put("role", hospital.security.AuthoritiesConstants.DOCTOR);
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("message", "Bác sĩ và tài khoản đăng nhập đã được tạo");
+        body.put("doctor", doctorDetail(savedDoctor));
+        body.put("account", account);
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
     @PutMapping("/doctors/{id}")
@@ -281,6 +317,22 @@ public class AdminResource {
         return map;
     }
 
+    private User createDoctorUser(DoctorRequest request) {
+        User user = new User();
+        user.setLogin(request.login().trim());
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setFirstName(request.fullName().trim());
+        user.setEmail(request.email().trim().toLowerCase());
+        user.setPhoneNumber(request.phoneNumber());
+        user.setActivated(true);
+        user.setLangKey("vi");
+        Authority doctorAuthority = authorityRepository
+            .findById(hospital.security.AuthoritiesConstants.DOCTOR)
+            .orElseThrow(() -> new IllegalStateException("ROLE_DOCTOR not found"));
+        user.getAuthorities().add(doctorAuthority);
+        return userRepository.save(user);
+    }
+
     private void applyDoctorRequest(Doctor doctor, DoctorRequest request) {
         doctor.setFullName(request.fullName().trim());
         doctor.setEmail(request.email());
@@ -314,6 +366,8 @@ public class AdminResource {
 
     public record DoctorRequest(
         @NotBlank String fullName,
+        String login,
+        String password,
         String email,
         String phoneNumber,
         String bio,

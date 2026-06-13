@@ -177,5 +177,45 @@
     "updateError": "Failed to update",
     "createSuccess": "Created successfully",
     "createError": "Failed to create"
+  },
+  "sidebar": {
+    "collapse": "Collapse",
+    "expand": "Expand"
+  },
+  "pendingApprovals": {
+    "title": "Pending Approvals",
+    "description": "Appointments awaiting review",
+    "approve": "Approve",
+    "reject": "Reject",
+    "noData": "No pending appointments",
+    "patient": "Patient",
+    "doctor": "Doctor",
+    "date": "Appointment Date",
+    "actions": "Actions"
+  },
+  "recentActivities": {
+    "title": "Recent Activities",
+    "user": "User",
+    "action": "Action",
+    "entity": "Entity",
+    "time": "Time",
+    "noData": "No recent activities",
+    "actions": {
+      "created": "Created",
+      "updated": "Updated",
+      "deleted": "Deleted",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "registered": "Registered",
+      "booked": "Booked"
+    }
+  },
+  "topBar": {
+    "search": "Search...",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "notifications": "Notifications",
+    "noNotifications": "No new notifications"
   }
 }

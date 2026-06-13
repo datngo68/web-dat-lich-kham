@@ -1,14 +1,13 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import { Navbar } from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Calendar, Clock, CheckCircle, XCircle, Filter, User, Stethoscope, FileText, X, Save, Loader2 } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, XCircle, Filter, User, Stethoscope, FileText, X, Save, Loader2, Plus } from 'lucide-react';
 import { apiService } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -22,6 +21,11 @@ export default function AdminAppointmentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [patients, setPatients] = useState<any[]>([]);
+  const [doctors, setDoctors] = useState<any[]>([]);
+  const [createForm, setCreateForm] = useState({ patientId: '', doctorId: '', hospitalId: '', appointmentDate: '', appointmentTime: '', reason: '', notes: '' });
 
   // Medical Record Modal State
   const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
@@ -61,13 +65,50 @@ export default function AdminAppointmentsPage() {
   };
 
   useEffect(() => {
-    if (!isInitialized) return;
-    if (!isAuthenticated || !hasAccess) {
-      router.push('/');
+    fetchAppointments();
+  }, [page, statusFilter]);
+
+  const openCreateModal = async () => {
+    try {
+      const [usersResponse, doctorsResponse] = await Promise.all([
+        apiService.getAllUsers(1, 1000),
+        apiService.getAllDoctors(1, 1000),
+      ]);
+      const userList = Array.isArray(usersResponse) ? usersResponse : usersResponse?.data || [];
+      const doctorList = Array.isArray(doctorsResponse) ? doctorsResponse : doctorsResponse?.data || doctorsResponse?.content || [];
+      setPatients(userList.filter((item: any) => !item.authorities?.includes('ROLE_ADMIN')));
+      setDoctors(doctorList);
+      setCreateForm({ patientId: '', doctorId: '', hospitalId: '', appointmentDate: '', appointmentTime: '', reason: '', notes: '' });
+      setIsCreateModalOpen(true);
+    } catch (error) {
+      toast({ title: 'Error', description: 'Could not load patients and doctors.', variant: 'destructive' });
+    }
+  };
+
+  const handleCreateAppointment = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!createForm.patientId || !createForm.doctorId || !createForm.appointmentDate || !createForm.appointmentTime) {
+      toast({ title: 'Validation Error', description: 'Patient, doctor, date, and time are required.', variant: 'destructive' });
       return;
     }
-    fetchAppointments();
-  }, [isAuthenticated, hasAccess, router, page, statusFilter]);
+    setIsCreating(true);
+    try {
+      const doctor = doctors.find((item) => String(item.id) === createForm.doctorId);
+      await apiService.createAdminAppointment({
+        ...createForm,
+        patientId: Number(createForm.patientId),
+        doctorId: Number(createForm.doctorId),
+        hospitalId: createForm.hospitalId ? Number(createForm.hospitalId) : doctor?.hospitalId || doctor?.hospital?.id || null,
+      });
+      toast({ title: 'Success', description: 'Appointment created successfully.' });
+      setIsCreateModalOpen(false);
+      await fetchAppointments();
+    } catch (error: any) {
+      toast({ title: 'Create Failed', description: error.response?.data?.message || 'Could not create appointment.', variant: 'destructive' });
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   const handleUpdateStatus = async (id: string, newStatus: string) => {
     try {
@@ -153,200 +194,205 @@ export default function AdminAppointmentsPage() {
     }
   };
 
-  if (!isInitialized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated || !hasAccess) return null;
-
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-[#F8FAFC]">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          {/* Admin Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-            <div>
-              <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-                Appointment Management
-              </h1>
-              <p className="text-slate-500 font-medium">Review, confirm, and manage patient consultations</p>
+    <div className="space-y-6">
+      {/* Admin Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+            Appointment Management
+          </h1>
+          <p className="text-slate-500 font-medium">Review, confirm, and manage patient consultations</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button onClick={openCreateModal} className="rounded-xl"><Plus size={18} className="mr-2" />Add Appointment</Button>
+          <Button onClick={fetchAppointments} variant="outline" className="rounded-xl bg-white">
+            Refresh Data
+          </Button>
+        </div>
+      </div>
+
+      {/* Advanced Filters */}
+      <Card className="mb-8 border-0 shadow-sm overflow-hidden">
+        <div className="bg-primary h-1 w-full" />
+        <CardContent className="p-6">
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2 mr-4 text-slate-400">
+              <Filter size={18} />
+              <span className="text-sm font-bold uppercase tracking-wider">Filter By Status:</span>
             </div>
-            <div className="flex items-center gap-3">
-              <Button onClick={fetchAppointments} variant="outline" className="rounded-xl bg-white">
-                Refresh Data
+            {['', 'PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'].map((status) => (
+              <Button
+                key={status}
+                variant={statusFilter === status ? 'default' : 'ghost'}
+                onClick={() => {
+                  setStatusFilter(status);
+                  setPage(1);
+                }}
+                className={`rounded-xl font-bold ${statusFilter === status ? 'shadow-md' : 'text-slate-500'}`}
+              >
+                {status || 'All Appointments'}
               </Button>
-            </div>
+            ))}
           </div>
+        </CardContent>
+      </Card>
 
-          {/* Advanced Filters */}
-          <Card className="mb-8 border-0 shadow-sm overflow-hidden">
-            <div className="bg-primary h-1 w-full" />
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4 flex-wrap">
-                <div className="flex items-center gap-2 mr-4 text-slate-400">
-                  <Filter size={18} />
-                  <span className="text-sm font-bold uppercase tracking-wider">Filter By Status:</span>
-                </div>
-                {['', 'PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'].map((status) => (
-                  <Button
-                    key={status}
-                    variant={statusFilter === status ? 'default' : 'ghost'}
-                    onClick={() => {
-                      setStatusFilter(status);
-                      setPage(1);
-                    }}
-                    className={`rounded-xl font-bold ${statusFilter === status ? 'shadow-md' : 'text-slate-500'}`}
-                  >
-                    {status || 'All Appointments'}
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+      {/* Appointments List */}
+      {isLoading ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-32 bg-white rounded-3xl animate-pulse shadow-sm" />
+          ))}
+        </div>
+      ) : appointments.length === 0 ? (
+        <Card className="border-dashed border-2 bg-slate-50/50">
+          <CardContent className="py-20 text-center">
+            <Calendar className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-slate-900">No records found</h3>
+            <p className="text-slate-500">Try adjusting your filters or check back later.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-6">
+          {appointments.map((apt) => (
+            <Card key={apt.id} className="border-0 shadow-sm hover:shadow-md transition-all overflow-hidden group">
+              <CardContent className="p-0">
+                <div className="flex flex-col lg:flex-row">
+                  {/* Left: Info */}
+                  <div className="p-8 flex-1">
+                    <div className="flex items-center gap-3 mb-6">
+                      <Badge 
+                        className={`px-3 py-1 rounded-full font-black text-[10px] uppercase tracking-widest ${
+                          apt.status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
+                          (apt.status === 'SCHEDULED' || apt.status === 'CONFIRMED') ? 'bg-blue-100 text-blue-700' :
+                          apt.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700' :
+                          'bg-rose-100 text-rose-700'
+                        }`}
+                      >
+                        {apt.status}
+                      </Badge>
+                      <span className="text-xs font-bold text-slate-400">ID: #{String(apt.id).slice(0, 8)}</span>
+                    </div>
 
-          {/* Appointments List */}
-          {isLoading ? (
-            <div className="space-y-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-32 bg-white rounded-3xl animate-pulse shadow-sm" />
-              ))}
-            </div>
-          ) : appointments.length === 0 ? (
-            <Card className="border-dashed border-2 bg-slate-50/50">
-              <CardContent className="py-20 text-center">
-                <Calendar className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-slate-900">No records found</h3>
-                <p className="text-slate-500">Try adjusting your filters or check back later.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-6">
-              {appointments.map((apt) => (
-                <Card key={apt.id} className="border-0 shadow-sm hover:shadow-md transition-all overflow-hidden group">
-                  <CardContent className="p-0">
-                    <div className="flex flex-col lg:flex-row">
-                      {/* Left: Info */}
-                      <div className="p-8 flex-1">
-                        <div className="flex items-center gap-3 mb-6">
-                          <Badge 
-                            className={`px-3 py-1 rounded-full font-black text-[10px] uppercase tracking-widest ${
-                              apt.status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
-                              (apt.status === 'SCHEDULED' || apt.status === 'CONFIRMED') ? 'bg-blue-100 text-blue-700' :
-                              apt.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700' :
-                              'bg-rose-100 text-rose-700'
-                            }`}
-                          >
-                            {apt.status}
-                          </Badge>
-                          <span className="text-xs font-bold text-slate-400">ID: #{String(apt.id).slice(0, 8)}</span>
+                    <div className="grid md:grid-cols-2 gap-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
+                          <User size={24} />
                         </div>
-
-                        <div className="grid md:grid-cols-2 gap-8">
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
-                              <User size={24} />
-                            </div>
-                            <div>
-                              <p className="text-xs font-bold text-slate-400 uppercase">Patient</p>
-                              <p className="text-lg font-black text-slate-900">{apt.patientName || 'Anonymous'}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                              <Stethoscope size={24} />
-                            </div>
-                            <div>
-                              <p className="text-xs font-bold text-slate-400 uppercase">Doctor</p>
-                              <p className="text-lg font-black text-slate-900">{apt.doctorName || 'Specialist'}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-8 flex flex-wrap gap-6 border-t border-slate-50 pt-6">
-                          <div className="flex items-center gap-2 text-slate-600">
-                            <Calendar size={18} className="text-primary" />
-                            <span className="font-bold">{new Date(apt.appointmentDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-slate-600">
-                            <Clock size={18} className="text-primary" />
-                            <span className="font-bold">{apt.appointmentTime}</span>
-                          </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-400 uppercase">Patient</p>
+                          <p className="text-lg font-black text-slate-900">{apt.patientName || 'Anonymous'}</p>
                         </div>
                       </div>
-
-                      {/* Right: Actions */}
-                      <div className="bg-slate-50/50 p-8 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col justify-center gap-3 min-w-[240px]">
-                        {apt.status === 'PENDING' && (
-                          <Button 
-                            onClick={() => handleUpdateStatus(apt.id, 'CONFIRMED')}
-                            className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 font-bold shadow-lg shadow-blue-200"
-                          >
-                            <CheckCircle size={18} className="mr-2" /> Confirm Appointment
-                          </Button>
-                        )}
-                        {(apt.status === 'SCHEDULED' || apt.status === 'CONFIRMED') && (
-                          <Button 
-                            onClick={() => handleMarkCompleted(apt)}
-                            className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 font-bold shadow-lg shadow-emerald-200"
-                          >
-                            <CheckCircle size={18} className="mr-2" /> Mark Completed
-                          </Button>
-                        )}
-                        {(apt.status === 'PENDING' || apt.status === 'SCHEDULED') && (
-                          <Button 
-                            onClick={() => handleUpdateStatus(apt.id, 'CANCELLED')}
-                            variant="outline" 
-                            className="w-full rounded-xl border-rose-200 text-rose-600 hover:bg-rose-50 font-bold"
-                          >
-                            <XCircle size={18} className="mr-2" /> Cancel Visit
-                          </Button>
-                        )}
-                        <Button 
-                          onClick={() => router.push(`/admin/users?search=${apt.patientName}`)}
-                          variant="ghost" 
-                          className="w-full rounded-xl font-bold text-slate-400"
-                        >
-                          View History
-                        </Button>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                          <Stethoscope size={24} />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-400 uppercase">Doctor</p>
+                          <p className="text-lg font-black text-slate-900">{apt.doctorName || 'Specialist'}</p>
+                        </div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
 
-          {/* Pagination */}
-          {!isLoading && appointments.length > 0 && (
-            <div className="flex justify-between items-center mt-12 bg-white p-4 rounded-2xl shadow-sm">
-              <Button
-                variant="ghost"
-                onClick={() => setPage(Math.max(1, page - 1))}
-                disabled={page === 1}
-                className="font-bold"
-              >
-                Previous Page
-              </Button>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Page</span>
-                <span className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center font-black">{page}</span>
-              </div>
-              <Button
-                variant="ghost"
-                onClick={() => setPage(page + 1)}
-                className="font-bold"
-              >
-                Next Page
-              </Button>
-            </div>
-          )}
+                    <div className="mt-8 flex flex-wrap gap-6 border-t border-slate-50 pt-6">
+                      <div className="flex items-center gap-2 text-slate-600">
+                        <Calendar size={18} className="text-primary" />
+                        <span className="font-bold">{new Date(apt.appointmentDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-600">
+                        <Clock size={18} className="text-primary" />
+                        <span className="font-bold">{apt.appointmentTime}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Actions */}
+                  <div className="bg-slate-50/50 p-8 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col justify-center gap-3 min-w-[240px]">
+                    {apt.status === 'PENDING' && (
+                      <Button 
+                        onClick={() => handleUpdateStatus(apt.id, 'CONFIRMED')}
+                        className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 font-bold shadow-lg shadow-blue-200"
+                      >
+                        <CheckCircle size={18} className="mr-2" /> Confirm Appointment
+                      </Button>
+                    )}
+                    {(apt.status === 'SCHEDULED' || apt.status === 'CONFIRMED') && (
+                      <Button 
+                        onClick={() => handleMarkCompleted(apt)}
+                        className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 font-bold shadow-lg shadow-emerald-200"
+                      >
+                        <CheckCircle size={18} className="mr-2" /> Mark Completed
+                      </Button>
+                    )}
+                    {(apt.status === 'PENDING' || apt.status === 'SCHEDULED') && (
+                      <Button 
+                        onClick={() => handleUpdateStatus(apt.id, 'CANCELLED')}
+                        variant="outline" 
+                        className="w-full rounded-xl border-rose-200 text-rose-600 hover:bg-rose-50 font-bold"
+                      >
+                        <XCircle size={18} className="mr-2" /> Cancel Visit
+                      </Button>
+                    )}
+                    <Button 
+                      onClick={() => router.push(`/admin/users?search=${apt.patientName}`)}
+                      variant="ghost" 
+                      className="w-full rounded-xl font-bold text-slate-400"
+                    >
+                      View History
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </main>
+      )}
+
+      {/* Pagination */}
+      {!isLoading && appointments.length > 0 && (
+        <div className="flex justify-between items-center mt-12 bg-white p-4 rounded-2xl shadow-sm">
+          <Button
+            variant="ghost"
+            onClick={() => setPage(Math.max(1, page - 1))}
+            disabled={page === 1}
+            className="font-bold"
+          >
+            Previous Page
+          </Button>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Page</span>
+            <span className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center font-black">{page}</span>
+          </div>
+          <Button
+            variant="ghost"
+            onClick={() => setPage(page + 1)}
+            className="font-bold"
+          >
+            Next Page
+          </Button>
+        </div>
+      )}
+
+
+      {isCreateModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsCreateModalOpen(false)} />
+          <form onSubmit={handleCreateAppointment} className="relative w-full max-w-xl space-y-5 rounded-3xl bg-white p-8 shadow-2xl">
+            <div className="flex items-center justify-between"><div><h2 className="text-2xl font-black text-slate-900">Add Appointment</h2><p className="text-sm text-slate-500">Create an appointment for a patient.</p></div><button type="button" onClick={() => setIsCreateModalOpen(false)}><X size={20} /></button></div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="space-y-2 text-sm font-bold text-slate-700">Patient<select required value={createForm.patientId} onChange={(e) => setCreateForm({ ...createForm, patientId: e.target.value })} className="w-full rounded-xl border p-3 font-normal"><option value="">Select patient</option>{patients.map((patient) => <option key={patient.id} value={patient.id}>{patient.fullName || patient.login} ({patient.email})</option>)}</select></label>
+              <label className="space-y-2 text-sm font-bold text-slate-700">Doctor<select required value={createForm.doctorId} onChange={(e) => setCreateForm({ ...createForm, doctorId: e.target.value })} className="w-full rounded-xl border p-3 font-normal"><option value="">Select doctor</option>{doctors.map((doctor) => <option key={doctor.id} value={doctor.id}>{doctor.fullName || doctor.name}</option>)}</select></label>
+              <label className="space-y-2 text-sm font-bold text-slate-700">Date<Input required type="date" min={new Date().toISOString().split('T')[0]} value={createForm.appointmentDate} onChange={(e) => setCreateForm({ ...createForm, appointmentDate: e.target.value })} /></label>
+              <label className="space-y-2 text-sm font-bold text-slate-700">Time<Input required type="time" value={createForm.appointmentTime} onChange={(e) => setCreateForm({ ...createForm, appointmentTime: e.target.value })} /></label>
+            </div>
+            <label className="block space-y-2 text-sm font-bold text-slate-700">Reason<Input value={createForm.reason} onChange={(e) => setCreateForm({ ...createForm, reason: e.target.value })} /></label>
+            <label className="block space-y-2 text-sm font-bold text-slate-700">Notes<textarea value={createForm.notes} onChange={(e) => setCreateForm({ ...createForm, notes: e.target.value })} className="w-full rounded-xl border p-3 font-normal" rows={3} /></label>
+            <div className="flex justify-end gap-3"><Button type="button" variant="outline" onClick={() => setIsCreateModalOpen(false)}>Cancel</Button><Button type="submit" disabled={isCreating}>{isCreating ? 'Creating...' : 'Create Appointment'}</Button></div>
+          </form>
+        </div>
+      )}
 
       {/* ========== Medical Record Modal ========== */}
       {isRecordModalOpen && selectedAppointment && (
@@ -360,7 +406,7 @@ export default function AdminAppointmentsPage() {
           {/* Modal */}
           <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-8 py-6 text-white">
+            <div className="bg-linear-to-r from-emerald-600 to-teal-600 px-8 py-6 text-white">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
@@ -472,6 +518,7 @@ export default function AdminAppointmentsPage() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
+

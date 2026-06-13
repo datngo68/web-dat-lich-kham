@@ -16,6 +16,7 @@ import {
 import { useAppointmentStore } from '@/stores/appointmentStore';
 import { useToast } from '@/hooks/use-toast';
 import { useNotificationStore } from '@/stores/notificationStore';
+import { useTranslation } from 'react-i18next';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -24,12 +25,13 @@ interface PaymentModalProps {
 }
 
 const PAYMENT_METHODS = [
-  { id: 'vnpay', name: 'VNPay', icon: Wallet, color: 'bg-blue-50 text-blue-600', description: 'Fast and secure bank transfer' },
-  { id: 'momo', name: 'Momo', icon: QrCode, color: 'bg-pink-50 text-pink-600', description: 'Popular e-wallet in Vietnam' },
-  { id: 'card', name: 'Credit Card', icon: CreditCard, color: 'bg-indigo-50 text-indigo-600', description: 'Visa, Mastercard, JCB' },
+  { id: 'vnpay', nameKey: 'methods.vnpay', icon: Wallet, color: 'bg-blue-50 text-blue-600', descriptionKey: 'modal.vnpayDescription' },
+  { id: 'momo', nameKey: 'methods.momo', icon: QrCode, color: 'bg-pink-50 text-pink-600', descriptionKey: 'modal.momoDescription' },
+  { id: 'card', nameKey: 'methods.creditCard', icon: CreditCard, color: 'bg-indigo-50 text-indigo-600', descriptionKey: 'modal.cardDescription' },
 ];
 
 export function PaymentModal({ isOpen, onClose, appointment }: PaymentModalProps) {
+  const { t } = useTranslation('payment');
   const [selectedMethod, setSelectedMethod] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [step, setStep] = useState<'selection' | 'processing' | 'success'>('selection');
@@ -53,8 +55,8 @@ export function PaymentModal({ isOpen, onClose, appointment }: PaymentModalProps
       
       // Tạo thông báo ảo thành công
       addNotification({
-        title: 'Payment Successful',
-        message: `Your payment for appointment #${String(appointment.id).slice(0, 8)} has been processed.`,
+        title: t('modal.notificationTitle'),
+        message: `${t('modal.notificationMessage')} #${String(appointment.id).slice(0, 8)}`,
         type: 'payment',
         appointmentId: String(appointment.id)
       });
@@ -83,9 +85,9 @@ export function PaymentModal({ isOpen, onClose, appointment }: PaymentModalProps
         <div className={`p-8 pb-6 transition-colors duration-500 ${step === 'success' ? 'bg-emerald-500' : 'bg-white'}`}>
           <div className="flex items-center justify-between">
             <h2 className={`text-2xl font-black tracking-tight ${step === 'success' ? 'text-white' : 'text-slate-900'}`}>
-              {step === 'selection' && 'Choose Payment Method'}
-              {step === 'processing' && 'Securing Connection...'}
-              {step === 'success' && 'Payment Complete'}
+              {step === 'selection' && t('modal.chooseMethod')}
+              {step === 'processing' && t('modal.securing')}
+              {step === 'success' && t('modal.complete')}
             </h2>
             {step !== 'processing' && (
               <button 
@@ -97,7 +99,7 @@ export function PaymentModal({ isOpen, onClose, appointment }: PaymentModalProps
             )}
           </div>
           {step === 'selection' && (
-            <p className="text-slate-500 font-medium mt-1">Transaction ID: #{String(appointment.id).toUpperCase()}</p>
+            <p className="text-slate-500 font-medium mt-1">{t('modal.transaction')}: #{String(appointment.id).toUpperCase()}</p>
           )}
         </div>
 
@@ -108,17 +110,17 @@ export function PaymentModal({ isOpen, onClose, appointment }: PaymentModalProps
               <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
                 <div className="flex justify-between items-end mb-4">
                   <div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Amount</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('modal.totalAmount')}</span>
                     <p className="text-3xl font-black text-slate-900">{Number(appointment.price || 150000).toLocaleString('vi-VN')}đ</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Consultation</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('modal.consultation')}</span>
                     <p className="text-sm font-bold text-slate-700">{appointment.doctorName}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl w-fit">
                   <ShieldCheck size={14} />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">Secure Payment</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">{t('modal.secure')}</span>
                 </div>
               </div>
 
@@ -140,8 +142,8 @@ export function PaymentModal({ isOpen, onClose, appointment }: PaymentModalProps
                         <Icon size={24} />
                       </div>
                       <div className="flex-1">
-                        <p className="font-bold text-slate-900">{method.name}</p>
-                        <p className="text-xs text-slate-500">{method.description}</p>
+                        <p className="font-bold text-slate-900">{t(method.nameKey)}</p>
+                        <p className="text-xs text-slate-500">{t(method.descriptionKey)}</p>
                       </div>
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                         selectedMethod === method.id ? 'border-primary bg-primary' : 'border-slate-200'
@@ -171,9 +173,9 @@ export function PaymentModal({ isOpen, onClose, appointment }: PaymentModalProps
                   <Loader2 size={32} className="text-primary animate-pulse" />
                 </div>
               </div>
-              <h3 className="text-xl font-black text-slate-900 mb-2">Processing Payment</h3>
+              <h3 className="text-xl font-black text-slate-900 mb-2">{t('modal.process')}</h3>
               <p className="text-slate-500 max-w-[240px] font-medium leading-relaxed">
-                Please do not close this window or refresh the page.
+                {t('modal.doNotClose')}
               </p>
             </div>
           )}
@@ -183,9 +185,9 @@ export function PaymentModal({ isOpen, onClose, appointment }: PaymentModalProps
               <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-8 animate-bounce">
                 <CheckCircle2 size={48} />
               </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-2">Sweet Success!</h3>
+              <h3 className="text-2xl font-black text-slate-900 mb-2">{t('modal.successTitle')}</h3>
               <p className="text-slate-500 max-w-[280px] font-medium leading-relaxed mb-10">
-                Your payment was processed successfully. We've sent a confirmation to your notifications.
+                {t('modal.successDescription')}
               </p>
               <Button 
                 onClick={onClose}
@@ -204,7 +206,7 @@ export function PaymentModal({ isOpen, onClose, appointment }: PaymentModalProps
           </div>
           <div className="flex items-center gap-1.5 opacity-40 grayscale hover:grayscale-0 transition-all cursor-default">
             <AlertCircle size={14} />
-            <span className="text-[10px] font-black uppercase tracking-widest">encrypted</span>
+            <span className="text-[10px] font-black uppercase tracking-widest">{t('modal.encrypted')}</span>
           </div>
         </div>
       </div>

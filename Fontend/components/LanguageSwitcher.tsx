@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,22 +25,25 @@ const languages: Language[] = [
 ];
 
 export function LanguageSwitcher() {
+  const { i18n } = useTranslation();
   const [currentLocale, setCurrentLocale] = useState<Locale>('vi');
 
   useEffect(() => {
-    // Load saved locale from localStorage
     const savedLocale = localStorage.getItem('locale') as Locale;
-    if (savedLocale && (savedLocale === 'vi' || savedLocale === 'en')) {
-      setCurrentLocale(savedLocale);
+    const initialLocale = savedLocale === 'vi' || savedLocale === 'en' ? savedLocale : (i18n.language as Locale);
+
+    if (initialLocale === 'vi' || initialLocale === 'en') {
+      setCurrentLocale(initialLocale);
+      void i18n.changeLanguage(initialLocale);
+      document.documentElement.lang = initialLocale;
     }
-  }, []);
+  }, [i18n]);
 
   const handleLanguageChange = (locale: Locale) => {
     setCurrentLocale(locale);
     localStorage.setItem('locale', locale);
-    
-    // Reload page to apply new locale
-    window.location.reload();
+    document.documentElement.lang = locale;
+    void i18n.changeLanguage(locale);
   };
 
   const currentLanguage = languages.find(lang => lang.code === currentLocale) || languages[0];

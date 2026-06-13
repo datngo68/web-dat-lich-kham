@@ -5,6 +5,7 @@ export interface Doctor {
   id: string;
   fullName: string;
   specialization: string;
+  specialty?: string;
   qualification: string;
   yearsOfExperience: number;
   rating?: number;
@@ -37,10 +38,7 @@ export interface TimeSlot {
   isAvailable: boolean;
 }
 
-export interface DaySchedule {
-  date: string;
-  slots: any[];
-}
+export type DaySchedule = TimeSlot;
 
 interface DoctorStore {
   doctors: Doctor[];
@@ -59,7 +57,7 @@ interface DoctorStore {
     limit?: number;
   }) => Promise<void>;
   getDoctorById: (id: string) => Promise<void>;
-  getAvailableSlots: (doctorId: string, startDate: string, endDate: string) => Promise<void>;
+  getAvailableSlots: (doctorId: string, startDate: string, endDate?: string) => Promise<void>;
   getDoctorReviews: (doctorId: string) => Promise<any>;
   clearError: () => void;
 }
@@ -127,10 +125,10 @@ export const useDoctorStore = create<DoctorStore>((set) => ({
     }
   },
 
-  getAvailableSlots: async (doctorId, startDate, endDate) => {
+  getAvailableSlots: async (doctorId, startDate, endDate = startDate) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await apiService.getDoctorSlots(doctorId, startDate, endDate);
+      const response: any = await apiService.getDoctorSlots(doctorId, startDate, endDate);
       
       let schedule = [];
       if (response?.availableSlots) {
@@ -145,7 +143,7 @@ export const useDoctorStore = create<DoctorStore>((set) => ({
 
       set({
         isLoading: false,
-        availableSlots: schedule,
+        availableSlots: schedule.flatMap((item: any) => Array.isArray(item?.slots) ? item.slots : item),
       });
     } catch (error: any) {
       set({

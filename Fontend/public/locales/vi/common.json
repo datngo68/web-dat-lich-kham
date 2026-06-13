@@ -33,16 +33,74 @@
   "warning": "Cảnh báo",
   "info": "Thông tin",
   "actions": "Hành động",
-  "status": "Trạng thái",
-  "date": "Ngày",
-  "time": "Giờ",
+  "status": {
+    "pending": "Đang chờ",
+    "confirmed": "Đã xác nhận",
+    "completed": "Hoàn thành",
+    "cancelled": "Đã hủy",
+    "active": "Đang hoạt động",
+    "inactive": "Không hoạt động"
+  },
+  "date": {
+    "today": "Hôm nay",
+    "yesterday": "Hôm qua",
+    "tomorrow": "Ngày mai"
+  },
+  "time": {
+    "morning": "Buổi sáng",
+    "afternoon": "Buổi chiều",
+    "evening": "Buổi tối",
+    "night": "Buổi đêm"
+  },
   "name": "Tên",
   "email": "Email",
   "phone": "Số điện thoại",
   "address": "Địa chỉ",
   "description": "Mô tả",
   "details": "Chi tiết",
-  "home": "Trang chủ",
+  "home": {
+    "eyebrow": "Chăm sóc sức khỏe thế hệ mới",
+    "titleLine1": "Chăm sóc sức khỏe",
+    "titleLine2": "định nghĩa lại.",
+    "subtitle": "Trải nghiệm dịch vụ y tế cao cấp tại Sunrise Hospital. Bác sĩ chuyên môn cao, cơ sở hiện đại và đặt lịch dễ dàng.",
+    "findSpecialist": "Tìm chuyên gia",
+    "joinSunrise": "Tham gia Sunrise",
+    "stats": {
+      "specialists": "Chuyên gia",
+      "patients": "Bệnh nhân hài lòng",
+      "successRate": "Tỷ lệ thành công"
+    },
+    "instantTitle": "Đặt lịch tức thì",
+    "instantSubtitle": "Đặt lịch khám trong dưới 60 giây",
+    "why": "Vì sao chọn Sunrise?",
+    "excellence": "Xuất sắc trong chăm sóc sức khỏe",
+    "excellenceDesc": "Chúng tôi kết hợp chuyên môn con người với công nghệ hiện đại để mang lại trải nghiệm y tế tốt nhất.",
+    "features": {
+      "waitTitle": "Không phải chờ",
+      "waitDesc": "Lịch thông minh giúp bạn được khám đúng giờ đã đặt.",
+      "dataTitle": "Dữ liệu an toàn",
+      "dataDesc": "Hồ sơ y tế được mã hóa và bảo mật nghiêm ngặt.",
+      "specialistsTitle": "Chuyên gia hàng đầu",
+      "specialistsDesc": "Tiếp cận bác sĩ chất lượng cao, tận tâm và giàu kinh nghiệm."
+    },
+    "ctaTitle": "Bắt đầu hành trình sức khỏe tốt hơn.",
+    "ctaDesc": "Tham gia cùng hàng nghìn bệnh nhân tin tưởng Sunrise Hospital cho nhu cầu chăm sóc sức khỏe cao cấp.",
+    "bookAppointment": "Đặt lịch khám",
+    "createAccount": "Tạo tài khoản",
+    "footerDesc": "Tương lai của đặt lịch y tế: cao cấp, hiệu quả và lấy bệnh nhân làm trung tâm.",
+    "resources": "Tài nguyên",
+    "ourDoctors": "Đội ngũ bác sĩ",
+    "specialties": "Chuyên khoa",
+    "labTests": "Xét nghiệm",
+    "hospital": "Bệnh viện",
+    "aboutUs": "Về chúng tôi",
+    "careers": "Tuyển dụng",
+    "contact": "Liên hệ",
+    "legal": "Pháp lý",
+    "privacy": "Chính sách bảo mật",
+    "terms": "Điều khoản sử dụng",
+    "copyright": "© 2024 Sunrise Hospital. All excellence reserved."
+  },
   "dashboard": "Bảng điều khiển",
   "profile": "Hồ sơ",
   "settings": "Cài đặt",
@@ -54,24 +112,20 @@
     "doctors": "Bác sĩ",
     "appointments": "Lịch khám",
     "profile": "Hồ sơ",
-    "admin": "Quản trị"
+    "admin": "Quản trị",
+    "dashboard": "Bảng điều khiển",
+    "findDoctors": "Tìm bác sĩ",
+    "myAppointments": "Lịch khám của tôi",
+    "adminPanel": "Quản trị",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất"
   },
   "footer": {
     "about": "Về chúng tôi",
     "contact": "Liên hệ",
     "privacy": "Chính sách bảo mật",
     "terms": "Điều khoản sử dụng"
-  },
-  "time": {
-    "morning": "Buổi sáng",
-    "afternoon": "Buổi chiều",
-    "evening": "Buổi tối",
-    "night": "Buổi đêm"
-  },
-  "date": {
-    "today": "Hôm nay",
-    "yesterday": "Hôm qua",
-    "tomorrow": "Ngày mai"
   },
   "days": {
     "monday": "Thứ Hai",
@@ -81,14 +135,6 @@
     "friday": "Thứ Sáu",
     "saturday": "Thứ Bảy",
     "sunday": "Chủ Nhật"
-  },
-  "status": {
-    "pending": "Đang chờ",
-    "confirmed": "Đã xác nhận",
-    "completed": "Hoàn thành",
-    "cancelled": "Đã hủy",
-    "active": "Đang hoạt động",
-    "inactive": "Không hoạt động"
   },
   "gender": {
     "male": "Nam",
@@ -107,5 +153,11 @@
     "noResults": "Không tìm thấy kết quả",
     "networkError": "Lỗi kết nối mạng",
     "tryAgain": "Vui lòng thử lại"
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "markAllAsRead": "Đánh dấu đã đọc",
+    "allCaughtUp": "Không có thông báo mới!",
+    "viewAllActivity": "Xem mọi hoạt động"
   }
 }

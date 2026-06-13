@@ -236,7 +236,7 @@ export default function DashboardPage() {
                                 </span>
                               </div>
                               <h3 className="text-xl font-bold text-foreground mb-4">
-                                Consultation with {apt.doctorName || 'Specialist'}
+                                Consultation with {(apt as any).doctorName || 'Specialist'}
                               </h3>
                               <div className="grid grid-cols-2 gap-4">
                                 <div className="flex items-center gap-2 text-slate-600 bg-slate-50 p-2 rounded-lg">

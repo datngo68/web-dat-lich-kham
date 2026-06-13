@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import { Navbar } from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,15 +50,8 @@ export default function AdminSpecialtiesPage() {
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
 
   useEffect(() => {
-    if (!isInitialized) return;
-    const role = user?.role?.toUpperCase();
-    if (!isAuthenticated || (role !== 'ADMIN' && role !== 'ROLE_ADMIN')) {
-      router.push('/');
-      return;
-    }
-
     fetchSpecialties();
-  }, [isAuthenticated, user?.role, router, isInitialized]);
+  }, []);
 
   const fetchSpecialties = async () => {
     setIsLoading(true);
@@ -170,20 +162,12 @@ export default function AdminSpecialtiesPage() {
       (s.vietnamName || '').toLowerCase().includes(searchTerm.toLowerCase())
   ) : [];
 
-  const role = user?.role?.toUpperCase();
-  if (!isInitialized || !isAuthenticated || (role !== 'ADMIN' && role !== 'ROLE_ADMIN')) {
-    return null;
-  }
-
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-            <div>
-              <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">
                 Specialty <span className="text-blue-600">Management</span>
               </h1>
               <p className="text-slate-500 font-medium">Configure medical specialties and departments</p>
@@ -279,8 +263,6 @@ export default function AdminSpecialtiesPage() {
               ))}
             </div>
           )}
-        </div>
-      </main>
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -412,6 +394,6 @@ export default function AdminSpecialtiesPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   );
 }

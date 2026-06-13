@@ -90,5 +90,18 @@
   "validation": {
     "diagnosisRequired": "Vui lòng nhập chẩn đoán",
     "treatmentRequired": "Vui lòng nhập phương pháp điều trị"
+  },
+  "search": {
+    "subtitle": "Tìm và đặt lịch với các chuyên gia y tế chất lượng",
+    "placeholder": "Tên bác sĩ...",
+    "allSpecialties": "Tất cả chuyên khoa",
+    "minimumRating": "Đánh giá tối thiểu",
+    "button": "Tìm bác sĩ",
+    "loading": "Đang tải bác sĩ...",
+    "noResults": "Không tìm thấy bác sĩ. Hãy thử điều chỉnh bộ lọc.",
+    "years": "năm",
+    "viewAndBook": "Xem hồ sơ và đặt lịch",
+    "notFound": "Không tìm thấy bác sĩ",
+    "loadingDetails": "Đang tải thông tin bác sĩ..."
   }
 }

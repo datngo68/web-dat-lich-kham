@@ -1,8 +1,10 @@
 package hospital.service;
 
 import hospital.domain.Appointment;
+import hospital.domain.BankConfiguration;
 import hospital.domain.Payment;
 import hospital.repository.AppointmentRepository;
+import hospital.repository.BankConfigurationRepository;
 import hospital.repository.PaymentRepository;
 import hospital.service.dto.VietQRPaymentDTO;
 import java.util.Base64;
@@ -17,16 +19,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class VietQRService {
 
-    private static final String BANK_ACCOUNT = "1234567890";
-    private static final String BANK_NAME = "Vietcombank";
-    private static final String ACCOUNT_NAME = "BENH VIEN SUNRISE";
+    private static final long CONFIGURATION_ID = 1L;
 
     private final PaymentRepository paymentRepository;
     private final AppointmentRepository appointmentRepository;
+    private final BankConfigurationRepository bankConfigurationRepository;
 
-    public VietQRService(PaymentRepository paymentRepository, AppointmentRepository appointmentRepository) {
+    public VietQRService(
+        PaymentRepository paymentRepository,
+        AppointmentRepository appointmentRepository,
+        BankConfigurationRepository bankConfigurationRepository
+    ) {
         this.paymentRepository = paymentRepository;
         this.appointmentRepository = appointmentRepository;
+        this.bankConfigurationRepository = bankConfigurationRepository;
     }
 
     /**
@@ -42,17 +48,26 @@ public class VietQRService {
             throw new IllegalStateException("Appointment already paid");
         }
 
-        // Generate transfer content with appointment ID
-        String transferContent = String.format("BVSH%d", appointmentId);
+        BankConfiguration configuration = bankConfigurationRepository
+            .findById(CONFIGURATION_ID)
+            .orElseThrow(() -> new IllegalStateException("Bank configuration not found"));
+        if (!configuration.isVietqrEnabled()) {
+            throw new IllegalStateException("VietQR payment is disabled");
+        }
 
-        // Generate mock QR code data (Base64 encoded placeholder)
-        String qrCodeData = generateMockQRCode(BANK_ACCOUNT, appointment.getPrice(), transferContent);
+        String transferContent = configuration.getTransferTemplate().replace("{appointmentId}", appointmentId.toString());
+        String qrCodeData = generateMockQRCode(
+            configuration.getBankCode(),
+            configuration.getAccountNumber(),
+            appointment.getPrice(),
+            transferContent
+        );
 
         return new VietQRPaymentDTO(
             appointmentId,
-            BANK_NAME,
-            BANK_ACCOUNT,
-            ACCOUNT_NAME,
+            configuration.getBankName(),
+            configuration.getAccountNumber(),
+            configuration.getAccountName(),
             appointment.getPrice(),
             transferContent,
             qrCodeData
@@ -94,11 +109,10 @@ public class VietQRService {
      * Mock QR code generation
      * In real implementation, this would use VietQR API to generate actual QR code
      */
-    private String generateMockQRCode(String accountNumber, Long amount, String content) {
-        // Generate a simple mock QR data (in real app, would call VietQR API)
+    private String generateMockQRCode(String bankCode, String accountNumber, Long amount, String content) {
         String qrData = String.format(
             "VIETQR|BANK=%s|ACC=%s|AMOUNT=%s|CONTENT=%s",
-            BANK_NAME,
+            bankCode,
             accountNumber,
             amount.toString(),
             content

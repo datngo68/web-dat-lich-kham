@@ -1,9 +1,8 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import { Navbar } from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -42,17 +41,10 @@ export default function AdminStatisticsPage() {
   const [timeRange, setTimeRange] = useState('MONTH'); // DAY, MONTH, YEAR
 
   useEffect(() => {
-    if (!isInitialized) return;
-    const role = user?.role?.toUpperCase();
-    if (!isAuthenticated || (role !== 'ADMIN' && role !== 'ROLE_ADMIN')) {
-      router.push('/');
-      return;
-    }
-
     const fetchStats = async () => {
       try {
         const response = await apiService.getAdminDashboard();
-        setData(response?.data || response);
+        setData(response);
       } catch (error) {
         console.error('Failed to fetch statistics:', error);
       } finally {
@@ -61,7 +53,7 @@ export default function AdminStatisticsPage() {
     };
 
     fetchStats();
-  }, [isAuthenticated, user?.role, router]);
+  }, []);
 
   const handleExportJSON = () => {
     const exportData = {
@@ -91,19 +83,6 @@ export default function AdminStatisticsPage() {
     window.print();
   };
 
-  if (!isInitialized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  const role = user?.role?.toUpperCase();
-  if (!isAuthenticated || (role !== 'ADMIN' && role !== 'ROLE_ADMIN')) {
-    return null;
-  }
-
   // Mock data for comparison if backend data is sparse
   const dailyData = data?.dailyStats || [
     { name: 'Mon', appointments: 12, previous: 10 },
@@ -115,7 +94,7 @@ export default function AdminStatisticsPage() {
     { name: 'Sun', appointments: 10, previous: 12 },
   ];
 
-  const monthlyData = data?.revenueStats?.map((item: any) => ({
+  const monthlyData: Array<{ name: string; appointments: number; revenue: number }> = data?.revenueStats?.map((item: any) => ({
     name: item.month,
     appointments: Math.round(item.revenue / 10000), // Approximate appointments for visual
     revenue: item.revenue
@@ -129,8 +108,7 @@ export default function AdminStatisticsPage() {
   ];
 
   return (
-    <>
-      <Navbar />
+    <div className="space-y-6">
       <style jsx global>{`
         @media print {
           .no-print, nav, button, .print-hidden {
@@ -343,6 +321,7 @@ export default function AdminStatisticsPage() {
           </Card>
         </div>
       </main>
-    </>
+    </div>
   );
 }
+

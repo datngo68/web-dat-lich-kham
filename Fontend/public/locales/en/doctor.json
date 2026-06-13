@@ -90,5 +90,18 @@
   "validation": {
     "diagnosisRequired": "Please enter diagnosis",
     "treatmentRequired": "Please enter treatment method"
+  },
+  "search": {
+    "subtitle": "Search and book appointments with qualified healthcare professionals",
+    "placeholder": "Doctor name...",
+    "allSpecialties": "All Specialties",
+    "minimumRating": "Minimum Rating",
+    "button": "Search Doctors",
+    "loading": "Loading doctors...",
+    "noResults": "No doctors found. Try adjusting your filters.",
+    "years": "years",
+    "viewAndBook": "View Profile & Book",
+    "notFound": "Doctor not found",
+    "loadingDetails": "Loading doctor information..."
   }
 }

@@ -3,12 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import { Navbar } from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Mail, Phone, User as UserIcon, Shield, CheckCircle, Save, Trash2 } from 'lucide-react';
+import { Mail, Phone, User as UserIcon, Shield, CheckCircle, Save, Trash2, Plus } from 'lucide-react';
 import { apiService } from '@/services/api';
 import { useToast } from '@/components/ui/use-toast';
 import {
@@ -44,6 +43,7 @@ export default function AdminUsersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isCreateMode, setIsCreateMode] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
   // Error Alert State
@@ -74,15 +74,8 @@ export default function AdminUsersPage() {
   };
 
   useEffect(() => {
-    if (!isInitialized) return;
-    const role = user?.role?.toUpperCase();
-    if (!isAuthenticated || (role !== 'ADMIN' && role !== 'ROLE_ADMIN')) {
-      router.push('/');
-      return;
-    }
-
     fetchUsers();
-  }, [isAuthenticated, user?.role, router, page, isInitialized]);
+  }, [page]);
 
   const filteredUsers = users.filter(
     (u) =>
@@ -95,10 +88,12 @@ export default function AdminUsersPage() {
       const fullUser = await apiService.getUserById(u.login || u.email);
       setSelectedUser(fullUser);
       setIsEditMode(false);
+      setIsCreateMode(false);
       setIsModalOpen(true);
     } catch (error) {
       setSelectedUser(u);
       setIsEditMode(false);
+      setIsCreateMode(false);
       setIsModalOpen(true);
     }
   };
@@ -112,11 +107,32 @@ export default function AdminUsersPage() {
       setSelectedUser({ ...u });
     }
     setIsEditMode(true);
+    setIsCreateMode(false);
+    setIsModalOpen(true);
+  };
+
+  const handleCreate = () => {
+    setSelectedUser({
+      login: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      fullName: '',
+      activated: true,
+      langKey: 'vi',
+      authorities: ['ROLE_USER'],
+    });
+    setIsEditMode(true);
+    setIsCreateMode(true);
     setIsModalOpen(true);
   };
 
   const handleSave = async () => {
     if (!selectedUser) return;
+    if (!(selectedUser.fullName || '').trim() || !(selectedUser.email || '').trim()) {
+      toast({ title: 'Validation Error', description: 'Full name and email are required.', variant: 'destructive' });
+      return;
+    }
     setIsSaving(true);
     try {
       const nameParts = (selectedUser.fullName || '').trim().split(' ');
@@ -130,6 +146,20 @@ export default function AdminUsersPage() {
         // CRITICAL: Keep original login if present, don't just use email
         login: selectedUser.login || selectedUser.email,
       };
+
+      if (isCreateMode) {
+        await apiService.createUser({
+          ...updateData,
+          login: selectedUser.login || selectedUser.email.split('@')[0],
+          authorities: selectedUser.authorities || ['ROLE_USER'],
+          activated: true,
+          langKey: selectedUser.langKey || 'vi',
+        });
+        toast({ title: 'Success', description: 'User created successfully.' });
+        setIsModalOpen(false);
+        await fetchUsers();
+        return;
+      }
 
       const updatedUser = await apiService.updateUser(updateData);
       
@@ -188,50 +218,40 @@ export default function AdminUsersPage() {
     }
   };
 
-  const role = user?.role?.toUpperCase();
-  if (!isInitialized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-  if (!isAuthenticated || (role !== 'ADMIN' && role !== 'ROLE_ADMIN')) {
-    return null;
-  }
-
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          {/* Header */}
-          <div className="mb-8 flex justify-between items-end">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                User Management
-              </h1>
-              <p className="text-gray-600">Manage patient and staff accounts</p>
-            </div>
-            <Button onClick={() => fetchUsers()} variant="outline" size="sm">
-              Refresh List
-            </Button>
-          </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-end">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            User Management
+          </h1>
+          <p className="text-gray-600">Manage patient and staff accounts</p>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={handleCreate}>
+            <Plus size={16} className="mr-2" /> Add User
+          </Button>
+          <Button onClick={() => fetchUsers()} variant="outline" size="sm">
+            Refresh List
+          </Button>
+        </div>
+      </div>
 
-          {/* Search */}
-          <Card className="mb-8">
-            <CardContent className="p-6">
-              <div className="flex gap-4">
-                <Input
-                  placeholder="Search by name or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="flex-1"
-                />
-                <Button variant="outline">Search</Button>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Search */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex gap-4">
+            <Input
+              placeholder="Search by name or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-1"
+            />
+            <Button variant="outline">Search</Button>
+          </div>
+        </CardContent>
+      </Card>
 
           {/* Users Table */}
           {isLoading ? (
@@ -263,7 +283,7 @@ export default function AdminUsersPage() {
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold text-lg">{u.fullName}</h3>
                             {u.authorities?.includes('ROLE_ADMIN') && (
-                              <Shield size={16} className="text-amber-500" title="Admin" />
+                              <Shield size={16} className="text-amber-500" aria-label="Admin" />
                             )}
                           </div>
                           <div className="flex items-center gap-4 mt-2 text-gray-600 text-sm">
@@ -302,7 +322,7 @@ export default function AdminUsersPage() {
 
           {/* Pagination */}
           {!isLoading && users.length > 0 && (
-            <div className="flex justify-between items-center mt-8">
+            <div className="flex justify-between items-center">
               <Button
                 variant="outline"
                 onClick={() => setPage(Math.max(1, page - 1))}
@@ -320,21 +340,31 @@ export default function AdminUsersPage() {
               </Button>
             </div>
           )}
-        </div>
-      </main>
 
       {/* User Detail/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{isEditMode ? 'Edit User' : 'User Details'}</DialogTitle>
+            <DialogTitle>{isCreateMode ? 'Add User' : isEditMode ? 'Edit User' : 'User Details'}</DialogTitle>
             <DialogDescription>
-              {isEditMode ? 'Update user information below.' : 'Detailed information about the user account.'}
+              {isCreateMode ? 'Create a new user account.' : isEditMode ? 'Update user information below.' : 'Detailed information about the user account.'}
             </DialogDescription>
           </DialogHeader>
           
           {selectedUser && (
             <div className="grid gap-4 py-4">
+              {isCreateMode && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="login" className="text-right">Login</Label>
+                  <Input
+                    id="login"
+                    value={selectedUser.login || ''}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, login: e.target.value })}
+                    placeholder="Leave blank to use email prefix"
+                    className="col-span-3"
+                  />
+                </div>
+              )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">Full Name</Label>
                 <Input
@@ -395,7 +425,7 @@ export default function AdminUsersPage() {
             </Button>
             {isEditMode && (
               <Button onClick={handleSave} disabled={isSaving}>
-                {isSaving ? 'Saving...' : 'Save Changes'}
+                {isSaving ? 'Saving...' : isCreateMode ? 'Create User' : 'Save Changes'}
                 {!isSaving && <Save size={16} className="ml-2" />}
               </Button>
             )}
@@ -424,6 +454,7 @@ export default function AdminUsersPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   );
 }
+

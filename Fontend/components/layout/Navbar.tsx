@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -6,30 +6,29 @@ import { useAuthStore } from '@/stores/authStore';
 import { useAppointmentStore } from '@/stores/appointmentStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { Button } from '@/components/ui/button';
-import { Menu, X, LogOut, Bell, Calendar, Clock } from 'lucide-react';
+import { Menu, X, LogOut, Bell } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 export function Navbar() {
   const router = useRouter();
+  const { t } = useTranslation('common');
   const { user, isAuthenticated, logout } = useAuthStore();
   const { fetchAppointments } = useAppointmentStore();
-  const { 
-    notifications: storeNotifications, 
-    markAsRead, 
-    markAllAsRead, 
-    getUnreadCount 
+  const {
+    notifications: storeNotifications,
+    markAsRead,
+    markAllAsRead,
+    getUnreadCount,
   } = useNotificationStore();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotifyOpen, setIsNotifyOpen] = useState(false);
-
   const unreadCount = getUnreadCount();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchAppointments();
-    }
+    if (isAuthenticated) fetchAppointments();
   }, [isAuthenticated, fetchAppointments]);
 
   const handleLogout = async () => {
@@ -59,35 +58,33 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
-          {/* Language Switcher - Available for everyone */}
           <LanguageSwitcher />
-          
+
           {isAuthenticated ? (
             <>
               <Link href="/dashboard" className="text-foreground/70 hover:text-primary font-medium transition-colors">
-                Dashboard
+                {t('nav.dashboard')}
               </Link>
               <Link href="/appointments" className="text-foreground/70 hover:text-primary font-medium transition-colors">
-                Appointments
+                {t('nav.appointments')}
               </Link>
               <Link href="/profile" className="text-foreground/70 hover:text-primary font-medium transition-colors">
-                Profile
+                {t('nav.profile')}
               </Link>
               {(user?.role?.toUpperCase() === 'ADMIN' || user?.role?.toUpperCase() === 'ROLE_ADMIN' || user?.role?.toUpperCase() === 'DOCTOR' || user?.role?.toUpperCase() === 'ROLE_DOCTOR') && (
                 <Link href="/admin" className="text-foreground/70 hover:text-primary font-medium transition-colors">
-                  Admin Panel
+                  {t('nav.adminPanel')}
                 </Link>
               )}
 
-              {/* Notification Bell */}
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setIsNotifyOpen(!isNotifyOpen)}
                   className="p-2 rounded-full hover:bg-slate-100 transition-colors relative"
+                  aria-label={t('notifications.title')}
                 >
-                  <Bell size={22} className={unreadCount > 0 ? "text-rose-500 animate-swing" : "text-slate-600"} />
+                  <Bell size={22} className={unreadCount > 0 ? 'text-rose-500 animate-swing' : 'text-slate-600'} />
                   {unreadCount > 0 && (
                     <span className="absolute top-1 right-1 bg-rose-600 text-white text-[10px] font-black min-w-4 h-4 px-1 flex items-center justify-center rounded-full border-2 border-white">
                       {unreadCount}
@@ -95,32 +92,31 @@ export function Navbar() {
                   )}
                 </button>
 
-                {/* Notification Dropdown */}
                 {isNotifyOpen && (
                   <div className="absolute right-0 mt-3 w-96 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in slide-in-from-top-2 z-50">
                     <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                      <h4 className="font-black text-slate-900">Notifications</h4>
+                      <h4 className="font-black text-slate-900">{t('notifications.title')}</h4>
                       {unreadCount > 0 && (
-                        <button 
+                        <button
                           onClick={markAllAsRead}
                           className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline"
                         >
-                          Mark all as read
+                          {t('notifications.markAllAsRead')}
                         </button>
                       )}
                     </div>
-                    
+
                     <div className="max-h-[420px] overflow-y-auto scrollbar-hide py-2">
                       {storeNotifications.length === 0 ? (
                         <div className="py-12 text-center">
                           <Bell size={40} className="mx-auto text-slate-100 mb-4" />
-                          <p className="text-sm text-slate-400">All caught up!</p>
+                          <p className="text-sm text-slate-400">{t('notifications.allCaughtUp')}</p>
                         </div>
                       ) : (
                         <div className="divide-y divide-slate-50">
                           {storeNotifications.map((n) => (
-                            <div 
-                              key={n.id} 
+                            <div
+                              key={n.id}
                               onClick={() => handleNotificationClick(n)}
                               className={`px-6 py-4 cursor-pointer hover:bg-slate-50 transition-colors flex gap-4 ${!n.isRead ? 'bg-blue-50/30' : ''}`}
                             >
@@ -139,28 +135,24 @@ export function Navbar() {
                     </div>
 
                     {storeNotifications.length > 0 && (
-                      <Link 
-                        href="/dashboard" 
+                      <Link
+                        href="/dashboard"
                         onClick={() => setIsNotifyOpen(false)}
                         className="block py-4 text-center text-xs font-bold text-slate-400 hover:text-primary border-t border-slate-50 transition-colors"
                       >
-                        View all activity
+                        {t('notifications.viewAllActivity')}
                       </Link>
                     )}
                   </div>
                 )}
               </div>
+
               <div className="flex items-center gap-3 pl-8 border-l">
                 <div>
                   <p className="text-sm font-bold text-slate-900">{user?.fullName}</p>
                   <p className="text-xs text-slate-500 font-medium">{user?.email}</p>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="text-destructive hover:text-destructive"
-                >
+                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-destructive hover:text-destructive">
                   <LogOut size={18} />
                 </Button>
               </div>
@@ -168,35 +160,29 @@ export function Navbar() {
           ) : (
             <>
               <Link href="/doctors" className="text-foreground/70 hover:text-primary font-medium transition-colors">
-                Find Doctors
+                {t('nav.findDoctors')}
               </Link>
               <Button variant="outline" onClick={() => router.push('/login')}>
-                Login
+                {t('nav.login')}
               </Button>
               <Button onClick={() => router.push('/register')} className="bg-primary hover:bg-primary/90">
-                Register
+                {t('nav.register')}
               </Button>
             </>
           )}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-foreground hover:text-primary transition-colors"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
+        <button className="md:hidden text-foreground hover:text-primary transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden border-t bg-card/95 p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
-          {/* Language Switcher - Mobile */}
           <div className="flex justify-center pb-2 border-b border-slate-100">
             <LanguageSwitcher />
           </div>
-          
+
           {isAuthenticated ? (
             <>
               <div className="px-4 py-3 bg-slate-50 rounded-xl mb-4 border border-slate-100">
@@ -204,32 +190,28 @@ export function Navbar() {
                 <p className="text-xs text-slate-500 font-medium">{user?.email}</p>
               </div>
               <Link href="/dashboard" className="block px-4 py-2 text-foreground hover:bg-primary/10 rounded transition-colors">
-                Dashboard
+                {t('nav.dashboard')}
               </Link>
               <Link href="/appointments" className="block px-4 py-2 text-foreground hover:bg-primary/10 rounded transition-colors">
-                My Appointments
+                {t('nav.myAppointments')}
               </Link>
               <Link href="/profile" className="block px-4 py-2 text-foreground hover:bg-primary/10 rounded transition-colors">
-                Profile
+                {t('nav.profile')}
               </Link>
               {(user?.role?.toUpperCase() === 'ADMIN' || user?.role?.toUpperCase() === 'ROLE_ADMIN' || user?.role?.toUpperCase() === 'DOCTOR' || user?.role?.toUpperCase() === 'ROLE_DOCTOR') && (
                 <Link href="/admin" className="block px-4 py-2 text-foreground hover:bg-primary/10 rounded transition-colors">
-                  Admin Panel
+                  {t('nav.adminPanel')}
                 </Link>
               )}
-              <Button
-                variant="outline"
-                onClick={handleLogout}
-                className="w-full text-destructive hover:text-destructive mt-4"
-              >
+              <Button variant="outline" onClick={handleLogout} className="w-full text-destructive hover:text-destructive mt-4">
                 <LogOut size={18} className="mr-2" />
-                Logout
+                {t('nav.logout')}
               </Button>
             </>
           ) : (
             <>
               <Link href="/doctors" className="block px-4 py-2 text-foreground hover:bg-primary/10 rounded transition-colors">
-                Find Doctors
+                {t('nav.findDoctors')}
               </Link>
               <Button
                 variant="outline"
@@ -239,7 +221,7 @@ export function Navbar() {
                 }}
                 className="w-full"
               >
-                Login
+                {t('nav.login')}
               </Button>
               <Button
                 onClick={() => {
@@ -248,7 +230,7 @@ export function Navbar() {
                 }}
                 className="w-full bg-primary hover:bg-primary/90"
               >
-                Register
+                {t('nav.register')}
               </Button>
             </>
           )}

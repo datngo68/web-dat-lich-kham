@@ -33,16 +33,74 @@
   "warning": "Warning",
   "info": "Information",
   "actions": "Actions",
-  "status": "Status",
-  "date": "Date",
-  "time": "Time",
+  "status": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "date": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow"
+  },
+  "time": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "night": "Night"
+  },
   "name": "Name",
   "email": "Email",
   "phone": "Phone Number",
   "address": "Address",
   "description": "Description",
   "details": "Details",
-  "home": "Home",
+  "home": {
+    "eyebrow": "Next Generation Healthcare",
+    "titleLine1": "Healthcare",
+    "titleLine2": "Redefined.",
+    "subtitle": "Experience premium medical care at Sunrise Hospital. Expert doctors, state-of-the-art facilities, and seamless booking.",
+    "findSpecialist": "Find a Specialist",
+    "joinSunrise": "Join Sunrise",
+    "stats": {
+      "specialists": "Specialists",
+      "patients": "Happy Patients",
+      "successRate": "Success Rate"
+    },
+    "instantTitle": "Instant Scheduling",
+    "instantSubtitle": "Book appointments in under 60 seconds",
+    "why": "Why Sunrise?",
+    "excellence": "Excellence in Healthcare",
+    "excellenceDesc": "We combine human expertise with cutting-edge technology to provide the best medical experience.",
+    "features": {
+      "waitTitle": "Zero Wait Time",
+      "waitDesc": "Our smart scheduling ensures you are seen exactly when you book.",
+      "dataTitle": "Data Sovereignty",
+      "dataDesc": "Your medical records are encrypted and strictly confidential.",
+      "specialistsTitle": "Elite Specialists",
+      "specialistsDesc": "Access top-tier doctors vetted for excellence and empathy."
+    },
+    "ctaTitle": "Begin Your Journey to Better Health.",
+    "ctaDesc": "Join thousands of patients who trust Sunrise Hospital for their premium healthcare needs.",
+    "bookAppointment": "Book Appointment",
+    "createAccount": "Create Account",
+    "footerDesc": "The future of healthcare booking. Premium, efficient, and patient-centric.",
+    "resources": "Resources",
+    "ourDoctors": "Our Doctors",
+    "specialties": "Specialties",
+    "labTests": "Lab Tests",
+    "hospital": "Hospital",
+    "aboutUs": "About Us",
+    "careers": "Careers",
+    "contact": "Contact",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "copyright": "? 2024 Sunrise Hospital. All excellence reserved."
+  },
   "dashboard": "Dashboard",
   "profile": "Profile",
   "settings": "Settings",
@@ -54,24 +112,20 @@
     "doctors": "Doctors",
     "appointments": "Appointments",
     "profile": "Profile",
-    "admin": "Admin"
+    "admin": "Admin",
+    "dashboard": "Dashboard",
+    "findDoctors": "Find Doctors",
+    "myAppointments": "My Appointments",
+    "adminPanel": "Admin Panel",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
   },
   "footer": {
     "about": "About Us",
     "contact": "Contact",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service"
-  },
-  "time": {
-    "morning": "Morning",
-    "afternoon": "Afternoon",
-    "evening": "Evening",
-    "night": "Night"
-  },
-  "date": {
-    "today": "Today",
-    "yesterday": "Yesterday",
-    "tomorrow": "Tomorrow"
   },
   "days": {
     "monday": "Monday",
@@ -81,14 +135,6 @@
     "friday": "Friday",
     "saturday": "Saturday",
     "sunday": "Sunday"
-  },
-  "status": {
-    "pending": "Pending",
-    "confirmed": "Confirmed",
-    "completed": "Completed",
-    "cancelled": "Cancelled",
-    "active": "Active",
-    "inactive": "Inactive"
   },
   "gender": {
     "male": "Male",
@@ -107,5 +153,11 @@
     "noResults": "No results found",
     "networkError": "Network connection error",
     "tryAgain": "Please try again"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllAsRead": "Mark all as read",
+    "allCaughtUp": "All caught up!",
+    "viewAllActivity": "View all activity"
   }
 }

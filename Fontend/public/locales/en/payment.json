@@ -68,5 +68,25 @@
   "validation": {
     "methodRequired": "Please select payment method",
     "amountInvalid": "Invalid amount"
+  },
+  "modal": {
+    "chooseMethod": "Choose Payment Method",
+    "securing": "Securing Connection...",
+    "complete": "Payment Complete",
+    "totalAmount": "Total Amount",
+    "consultation": "Consultation",
+    "secure": "Secure Payment",
+    "process": "Processing Payment",
+    "doNotClose": "Please do not close this window or refresh the page.",
+    "successTitle": "Payment successful!",
+    "successDescription": "Your payment was processed successfully. We've sent a confirmation to your notifications.",
+    "return": "Return to Appointment",
+    "transaction": "Transaction ID",
+    "vnpayDescription": "Fast and secure bank transfer",
+    "momoDescription": "Popular e-wallet in Vietnam",
+    "cardDescription": "Visa, Mastercard, JCB",
+    "notificationTitle": "Payment Successful",
+    "notificationMessage": "Your appointment payment has been processed.",
+    "encrypted": "Encrypted"
   }
 }

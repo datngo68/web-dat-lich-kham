@@ -106,5 +106,13 @@
     "timeRequired": "Vui lòng chọn giờ khám",
     "reasonRequired": "Vui lòng nhập lý do khám",
     "symptomsRequired": "Vui lòng mô tả triệu chứng"
+  },
+  "list": {
+    "subtitle": "Quản lý và theo dõi các lần khám của bạn",
+    "loading": "Đang tải lịch khám...",
+    "emptyTitle": "Chưa có lịch khám",
+    "emptyDescription": "Bạn chưa có lịch khám nào. Hãy đặt lịch đầu tiên với chuyên gia y tế ngay!",
+    "browseDoctors": "Xem bác sĩ",
+    "dateTime": "Ngày và giờ"
   }
 }

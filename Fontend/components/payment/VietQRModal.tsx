@@ -173,7 +173,7 @@ export function VietQRModal({ isOpen, onClose, appointmentId, amount, onSuccess 
                 <label className="text-sm font-medium">Số tiền</label>
                 <input
                   type="text"
-                  value={vietQRData.amount.toLocaleString('vi-VN')} VND
+                  value={`${vietQRData.amount.toLocaleString('vi-VN')} VND`}
                   readOnly
                   className="w-full px-3 py-2 text-sm border rounded-md bg-gray-50 font-semibold"
                 />

@@ -106,5 +106,13 @@
     "timeRequired": "Please select a time",
     "reasonRequired": "Please enter reason for visit",
     "symptomsRequired": "Please describe symptoms"
+  },
+  "list": {
+    "subtitle": "Manage and track your healthcare visits",
+    "loading": "Loading your appointments...",
+    "emptyTitle": "No Appointments Yet",
+    "emptyDescription": "You don't have any appointments yet. Book your first appointment with a healthcare professional now!",
+    "browseDoctors": "Browse Doctors",
+    "dateTime": "Date & Time"
   }
 }

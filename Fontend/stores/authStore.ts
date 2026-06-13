@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+﻿import { create } from 'zustand';
 import { apiService } from '@/services/api';
 import Cookie from 'js-cookie';
 
@@ -8,6 +8,9 @@ export interface User {
   email: string;
   phoneNumber: string;
   role: string;
+  authorities?: string[];
+  firstName?: string;
+  lastName?: string;
   profilePicture?: string;
   address?: string;
   dateOfBirth?: string;
@@ -110,15 +113,24 @@ export const useAuthStore = create<AuthStore>((set) => ({
           isInitialized: true, 
           isLoading: false 
         });
-      } catch (error) {
-        set({ 
-          user: null, 
-          isAuthenticated: false, 
-          isInitialized: true, 
-          isLoading: false 
+      } catch (error: any) {
+        const status = error.response?.status;
+        if (status === 401 || status === 403) {
+          Cookie.remove('accessToken', { path: '/' });
+          Cookie.remove('refreshToken', { path: '/' });
+          set({
+            user: null,
+            isAuthenticated: false,
+            isInitialized: true,
+            isLoading: false
+          });
+          return;
+        }
+
+        set({
+          isInitialized: true,
+          isLoading: false
         });
-        Cookie.remove('accessToken');
-        Cookie.remove('refreshToken');
       }
     } else {
       set({ 
@@ -135,10 +147,16 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       const response = await apiService.getUserProfile();
       set({ user: response.data, isLoading: false, isAuthenticated: true });
-    } catch (error) {
-      set({ isLoading: false, isAuthenticated: false, user: null });
-      Cookie.remove('accessToken');
-      Cookie.remove('refreshToken');
+    } catch (error: any) {
+      const status = error.response?.status;
+      if (status === 401 || status === 403) {
+        Cookie.remove('accessToken', { path: '/' });
+        Cookie.remove('refreshToken', { path: '/' });
+        set({ isLoading: false, isAuthenticated: false, user: null });
+        return;
+      }
+
+      set({ isLoading: false });
     }
   },
 
@@ -146,3 +164,5 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ error: null });
   },
 }));
+
+

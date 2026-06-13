@@ -3,13 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import { Navbar } from '@/components/layout/Navbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Star, Edit, Eye, UserCheck, UserX, Save, X } from 'lucide-react';
+import { Star, Edit, Eye, UserCheck, UserX, Save, X, Plus } from 'lucide-react';
 import { apiService } from '@/services/api';
 import { useToast } from '@/components/ui/use-toast';
 import {
@@ -56,6 +55,7 @@ export default function AdminDoctorsPage() {
   const [doctorToDelete, setDoctorToDelete] = useState<any>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isCreateMode, setIsCreateMode] = useState(false);
 
   const mapDoctorData = (d: any) => {
     if (!d) return d;
@@ -78,12 +78,6 @@ export default function AdminDoctorsPage() {
   };
 
   useEffect(() => {
-    if (!isInitialized) return;
-    const role = user?.role?.toUpperCase();
-    if (!isAuthenticated || (role !== 'ADMIN' && role !== 'ROLE_ADMIN')) {
-      return;
-    }
-
     const fetchInitialData = async () => {
       try {
         const [docsRes, specsRes, hospsRes] = await Promise.all([
@@ -133,24 +127,39 @@ export default function AdminDoctorsPage() {
       console.warn('Failed to fetch full doctor details, using list data:', error);
       setSelectedDoctor({ ...doctor });
     }
+    setIsCreateMode(false);
+    setIsModalOpen(true);
+  };
+
+  const handleCreate = () => {
+    setSelectedDoctor({ fullName: '', login: '', password: '', email: '', phoneNumber: '', specialtyId: '', hospitalId: '', yearsOfExperience: 0, consultationFee: 0, bio: '', license: '', active: true });
+    setIsCreateMode(true);
     setIsModalOpen(true);
   };
 
   const handleSave = async () => {
     if (!selectedDoctor) return;
+    if (!selectedDoctor.fullName?.trim() || !selectedDoctor.email?.trim() || !selectedDoctor.specialtyId || !selectedDoctor.hospitalId) {
+      toast({ title: 'Validation Error', description: 'Full name, email, specialty, and hospital are required.', variant: 'destructive' });
+      return;
+    }
+    if (isCreateMode && (!selectedDoctor.login?.trim() || !selectedDoctor.password || selectedDoctor.password.length < 6)) {
+      toast({ title: 'Validation Error', description: 'Login and password (min 6 characters) are required for doctor account.', variant: 'destructive' });
+      return;
+    }
     setIsSaving(true);
     try {
-      const response = await apiService.updateDoctor(selectedDoctor.id, selectedDoctor);
+      const response = isCreateMode
+        ? await apiService.createDoctor(selectedDoctor)
+        : await apiService.updateDoctor(selectedDoctor.id, selectedDoctor);
       const updatedDoc = response.doctor || selectedDoctor;
       
-      setDoctors(
-        doctors.map((d) =>
-          d.id === selectedDoctor.id ? mapDoctorData(updatedDoc) : d
-        )
-      );
+      setDoctors((current) => isCreateMode
+        ? [mapDoctorData(response.doctor || response), ...current]
+        : current.map((d) => d.id === selectedDoctor.id ? mapDoctorData(updatedDoc) : d));
       toast({
         title: 'Success',
-        description: response.message || 'Doctor profile updated successfully.',
+        description: response.message || (isCreateMode ? 'Doctor created successfully.' : 'Doctor profile updated successfully.'),
       });
       setIsModalOpen(false);
     } catch (error: any) {
@@ -244,30 +253,18 @@ export default function AdminDoctorsPage() {
       (d.specialization || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const role = user?.role?.toUpperCase();
-  if (!isInitialized) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-  if (!isAuthenticated || (role !== 'ADMIN' && role !== 'ROLE_ADMIN')) {
-    return null;
-  }
-
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              Doctor Management
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-end justify-between">
+        <div>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          Doctor Management
             </h1>
             <p className="text-gray-600">Manage doctor profiles and availability</p>
           </div>
+          <Button onClick={handleCreate}><Plus size={16} className="mr-2" /> Add Doctor</Button>
+        </div>
 
           {/* Search */}
           <Card className="mb-8">
@@ -385,38 +382,36 @@ export default function AdminDoctorsPage() {
                   </CardContent>
                 </Card>
               ))}
-            </div>
-          )}
+          </div>
+        )}
 
-          {/* Pagination */}
-          {!isLoading && doctors.length > 0 && (
-            <div className="flex justify-between items-center mt-8">
-              <Button
-                variant="outline"
-                onClick={() => setPage(Math.max(1, page - 1))}
-                disabled={page === 1}
-              >
-                Previous
-              </Button>
-              <span className="text-gray-600">Page {page}</span>
-              <Button
-                variant="outline"
-                onClick={() => setPage(page + 1)}
-              >
-                Next
-              </Button>
-            </div>
-          )}
-        </div>
-      </main>
+        {/* Pagination */}
+        {!isLoading && doctors.length > 0 && (
+          <div className="flex justify-between items-center mt-8">
+            <Button
+              variant="outline"
+              onClick={() => setPage(Math.max(1, page - 1))}
+              disabled={page === 1}
+            >
+              Previous
+            </Button>
+            <span className="text-gray-600">Page {page}</span>
+            <Button
+              variant="outline"
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        )}
 
-      {/* Edit Doctor Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        {/* Edit Doctor Modal */}
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit Doctor Profile</DialogTitle>
+            <DialogTitle>{isCreateMode ? 'Add Doctor' : 'Edit Doctor Profile'}</DialogTitle>
             <DialogDescription>
-              Update information for Dr. {selectedDoctor?.fullName}
+              {isCreateMode ? 'Create a new doctor profile.' : `Update information for Dr. ${selectedDoctor?.fullName}`}
             </DialogDescription>
           </DialogHeader>
 
@@ -431,6 +426,54 @@ export default function AdminDoctorsPage() {
                   className="col-span-3"
                 />
               </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={selectedDoctor.email || ''}
+                  onChange={(e) => setSelectedDoctor({ ...selectedDoctor, email: e.target.value.trim().toLowerCase() })}
+                  className="col-span-3"
+                  placeholder="doctor@example.com"
+                />
+              </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="phone" className="text-right">Phone</Label>
+                <Input
+                  id="phone"
+                  value={selectedDoctor.phoneNumber || ''}
+                  onChange={(e) => setSelectedDoctor({ ...selectedDoctor, phoneNumber: e.target.value })}
+                  className="col-span-3"
+                />
+              </div>
+
+              {isCreateMode && (
+                <>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="login" className="text-right">Login</Label>
+                    <Input
+                      id="login"
+                      value={selectedDoctor.login || ''}
+                      onChange={(e) => setSelectedDoctor({ ...selectedDoctor, login: e.target.value.trim().toLowerCase() })}
+                      className="col-span-3"
+                      placeholder="doctor01"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="password" className="text-right">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={selectedDoctor.password || ''}
+                      onChange={(e) => setSelectedDoctor({ ...selectedDoctor, password: e.target.value })}
+                      className="col-span-3"
+                      placeholder="At least 6 characters"
+                    />
+                  </div>
+                </>
+              )}
 
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="specialty" className="text-right">Specialty</Label>
@@ -509,14 +552,14 @@ export default function AdminDoctorsPage() {
               Cancel
             </Button>
             <Button onClick={handleSave} disabled={isSaving}>
-              {isSaving ? 'Saving...' : 'Save Changes'}
+              {isSaving ? 'Saving...' : isCreateMode ? 'Create Doctor' : 'Save Changes'}
               {!isSaving && <Save size={16} className="ml-2" />}
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
-      {/* Delete Confirmation Alert */}
-      <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
+        </Dialog>
+        {/* Delete Confirmation Alert */}
+        <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Xác nhận xóa bác sĩ?</AlertDialogTitle>
@@ -535,10 +578,10 @@ export default function AdminDoctorsPage() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+        </AlertDialog>
 
-      {/* Conflict / Cannot Delete Alert */}
-      <AlertDialog open={isConflictAlertOpen} onOpenChange={setIsConflictAlertOpen}>
+        {/* Conflict / Cannot Delete Alert */}
+        <AlertDialog open={isConflictAlertOpen} onOpenChange={setIsConflictAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="text-red-600">Không thể xóa bác sĩ</AlertDialogTitle>
@@ -560,6 +603,6 @@ export default function AdminDoctorsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   );
 }

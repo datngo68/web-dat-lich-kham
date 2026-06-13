@@ -9,9 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Clock, User, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 export default function AppointmentsPage() {
   const router = useRouter();
+  const { t, i18n } = useTranslation(['appointment', 'common']);
   const { isAuthenticated } = useAuthStore();
   const { appointments, isLoading, fetchAppointments } = useAppointmentStore();
 
@@ -62,13 +64,13 @@ export default function AppointmentsPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-12">
             <div>
               <h1 className="text-5xl font-bold text-foreground mb-2">
-                My Appointments
+                {t('myAppointments')}
               </h1>
-              <p className="text-lg text-foreground/60">Manage and track your healthcare visits</p>
+              <p className="text-lg text-foreground/60">{t('list.subtitle')}</p>
             </div>
             <Link href="/doctors">
               <Button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2">
-                Book New Appointment
+                {t('bookAppointment')}
               </Button>
             </Link>
           </div>
@@ -77,19 +79,19 @@ export default function AppointmentsPage() {
           {isLoading ? (
             <div className="text-center py-16">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-              <p className="text-foreground/60 mt-4 text-lg">Loading your appointments...</p>
+              <p className="text-foreground/60 mt-4 text-lg">{t('list.loading')}</p>
             </div>
           ) : appointments.length === 0 ? (
             <Card className="border-0 shadow-lg bg-muted/30">
               <CardContent className="p-16 text-center">
                 <Calendar className="w-20 h-20 mx-auto text-muted-foreground mb-6 opacity-40" />
-                <h3 className="text-2xl font-bold text-foreground mb-3">No Appointments Yet</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-3">{t('list.emptyTitle')}</h3>
                 <p className="text-foreground/60 mb-8 text-lg">
-                  You don&apos;t have any appointments yet. Book your first appointment with a healthcare professional now!
+                  {t('list.emptyDescription')}
                 </p>
                 <Link href="/doctors">
                   <Button className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-3">
-                    Browse Doctors
+                    {t('list.browseDoctors')}
                   </Button>
                 </Link>
               </CardContent>
@@ -102,21 +104,21 @@ export default function AppointmentsPage() {
                     <div className="grid md:grid-cols-4 gap-6 p-8">
                       {/* Status */}
                       <div className="space-y-2">
-                        <p className="text-sm text-foreground/60 font-semibold uppercase">Status</p>
+                        <p className="text-sm text-foreground/60 font-semibold uppercase">{t('details.status')}</p>
                         <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border font-medium ${getStatusColor(appointment.status)}`}>
                           {getStatusIcon(appointment.status)}
-                          <span>{appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1).toLowerCase()}</span>
+                          <span>{t(`status.${appointment.status.toLowerCase()}`)}</span>
                         </div>
                       </div>
 
                       {/* Date & Time */}
                       <div className="space-y-2">
-                        <p className="text-sm text-foreground/60 font-semibold uppercase">Date & Time</p>
+                        <p className="text-sm text-foreground/60 font-semibold uppercase">{t('list.dateTime')}</p>
                         <div className="flex items-start gap-3">
                           <Calendar className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                           <div>
                             <p className="font-semibold text-foreground">
-                              {new Date(appointment.appointmentDate).toLocaleDateString('en-US', {
+                              {new Date(appointment.appointmentDate).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
                                 weekday: 'short',
                                 year: 'numeric',
                                 month: 'short',
@@ -133,11 +135,11 @@ export default function AppointmentsPage() {
 
                       {/* Doctor Info */}
                       <div className="space-y-2">
-                        <p className="text-sm text-foreground/60 font-semibold uppercase">Doctor</p>
+                        <p className="text-sm text-foreground/60 font-semibold uppercase">{t('details.doctor')}</p>
                         <div className="flex items-start gap-3">
                           <User className="w-5 h-5 text-secondary flex-shrink-0 mt-1" />
                           <div>
-                            <p className="font-semibold text-foreground">{appointment.doctorName}</p>
+                            <p className="font-semibold text-foreground">{(appointment as any).doctorName}</p>
                             <p className="text-sm text-foreground/60">{appointment.consultationType}</p>
                           </div>
                         </div>
@@ -145,10 +147,10 @@ export default function AppointmentsPage() {
 
                       {/* Actions */}
                       <div className="space-y-2">
-                        <p className="text-sm text-foreground/60 font-semibold uppercase">Actions</p>
+                        <p className="text-sm text-foreground/60 font-semibold uppercase">{t('common:actions')}</p>
                         <Link href={`/appointments/${appointment.id}`} className="block">
                           <Button variant="outline" className="w-full border-primary/20 hover:bg-primary/10">
-                            View Details
+                            {t('viewDetails')}
                           </Button>
                         </Link>
                       </div>

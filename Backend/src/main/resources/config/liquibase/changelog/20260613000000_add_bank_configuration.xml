@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="20260613000000-1" author="cursor">
+        <createTable tableName="bank_configuration">
+            <column name="id" type="bigint"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="bank_code" type="varchar(50)"><constraints nullable="false"/></column>
+            <column name="bank_name" type="varchar(150)"><constraints nullable="false"/></column>
+            <column name="account_number" type="varchar(50)"><constraints nullable="false"/></column>
+            <column name="account_name" type="varchar(150)"><constraints nullable="false"/></column>
+            <column name="transfer_template" type="varchar(150)" defaultValue="BVSH{appointmentId}"><constraints nullable="false"/></column>
+            <column name="vietqr_enabled" type="boolean" defaultValueBoolean="true"><constraints nullable="false"/></column>
+        </createTable>
+        <insert tableName="bank_configuration">
+            <column name="id" valueNumeric="1"/><column name="bank_code" value="VCB"/>
+            <column name="bank_name" value="Vietcombank"/><column name="account_number" value="1234567890"/>
+            <column name="account_name" value="BENH VIEN SUNRISE"/><column name="transfer_template" value="BVSH{appointmentId}"/>
+            <column name="vietqr_enabled" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -9,9 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { UserPlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t } = useTranslation('auth');
   const { register, isLoading, error, clearError } = useAuthStore();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -41,20 +43,20 @@ export default function RegisterPage() {
     clearError();
 
     const errors: { [key: string]: string } = {};
-    if (!formData.fullName) errors.fullName = 'Full name is required';
+    if (!formData.fullName) errors.fullName = t('validation.nameRequired');
     if (!formData.email) {
-      errors.email = 'Email is required';
+      errors.email = t('validation.emailRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = t('validation.invalidEmailFormat');
     }
-    if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
+    if (!formData.phoneNumber) errors.phoneNumber = t('validation.phoneRequired');
     if (!formData.password) {
-      errors.password = 'Password is required';
+      errors.password = t('validation.passwordRequired');
     } else if (formData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
+      errors.password = t('validation.passwordMin6');
     }
     if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
+      errors.confirmPassword = t('validation.passwordMismatch');
     }
 
     if (Object.keys(errors).length > 0) {
@@ -71,14 +73,14 @@ export default function RegisterPage() {
         phoneNumber: formData.phoneNumber,
       });
       toast({
-        title: 'Success',
-        description: 'Registration successful! Please login.',
+        title: t('common:success'),
+        description: t('messages.registerSuccess'),
       });
       router.push('/login');
     } catch (err) {
       toast({
-        title: 'Registration Failed',
-        description: error || 'Please try again',
+        title: t('register.error'),
+        description: error || t('messages.tryAgain'),
         variant: 'destructive',
       });
     }
@@ -101,16 +103,16 @@ export default function RegisterPage() {
             </div>
           </div>
           <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-            Join <span className="text-primary">Sunrise</span>
+            {t('register.brandTitle')}
           </h1>
-          <p className="text-slate-500 font-medium">Create your premium health account</p>
+          <p className="text-slate-500 font-medium">{t('register.brandSubtitle')}</p>
         </div>
 
         {/* Register Card */}
         <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-xl rounded-[2rem] overflow-hidden">
           <CardHeader className="space-y-1 pb-2">
-            <CardTitle className="text-2xl font-black text-slate-900">Sign Up</CardTitle>
-            <CardDescription className="text-slate-500 font-medium">Fill in your details to get started</CardDescription>
+            <CardTitle className="text-2xl font-black text-slate-900">{t('register.cardTitle')}</CardTitle>
+            <CardDescription className="text-slate-500 font-medium">{t('register.cardSubtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -244,9 +246,9 @@ export default function RegisterPage() {
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Creating account...
+                    {t('register.creating')}
                   </div>
-                ) : 'Create Account'}
+                ) : t('register.submit')}
               </Button>
 
               <div className="relative my-6">
@@ -254,7 +256,7 @@ export default function RegisterPage() {
                   <div className="w-full border-t border-slate-100"></div>
                 </div>
                 <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-black text-slate-400">
-                  <span className="bg-white px-3">Already a member?</span>
+                  <span className="bg-white px-3">{t('register.alreadyMember')}</span>
                 </div>
               </div>
 
@@ -264,7 +266,7 @@ export default function RegisterPage() {
                 className="w-full border-slate-200 h-12 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-all"
                 onClick={() => router.push('/login')}
               >
-                Sign In instead
+                {t('register.signInInstead')}
               </Button>
             </form>
           </CardContent>
@@ -273,9 +275,9 @@ export default function RegisterPage() {
         {/* Footer */}
         <div className="text-center text-sm">
           <p className="text-slate-500 font-medium">
-            By joining, you agree to our{' '}
+            {t('register.privacyPrefix')}{' '}
             <Link href="#" className="font-bold text-slate-900 hover:underline">
-              Privacy Policy
+              {t('register.privacy')}
             </Link>
           </p>
         </div>

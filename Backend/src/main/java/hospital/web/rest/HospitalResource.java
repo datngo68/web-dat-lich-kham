@@ -9,12 +9,17 @@ import hospital.service.dto.PaginationDTO;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,6 +66,65 @@ public class HospitalResource {
         Hospital hospital = hospitalRepository.findById(id).orElseThrow(() -> new IllegalStateException("Hospital not found"));
         return ResponseEntity.ok(toDetail(hospital));
     }
+
+    @PostMapping("/admin/hospitals")
+    public ResponseEntity<Map<String, Object>> createHospital(@RequestBody HospitalRequest request) {
+        if (request.name() == null || request.name().isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Hospital name is required"));
+        }
+        Hospital hospital = new Hospital();
+        applyRequest(hospital, request);
+        hospital.setRating(request.rating() != null ? request.rating() : 0D);
+        hospital.setReviewCount(request.reviewCount() != null ? request.reviewCount() : 0);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toSummary(hospitalRepository.save(hospital)));
+    }
+
+    @PutMapping("/admin/hospitals/{id}")
+    public ResponseEntity<Map<String, Object>> updateHospital(@PathVariable Long id, @RequestBody HospitalRequest request) {
+        return hospitalRepository.findById(id).map(hospital -> {
+            if (request.name() == null || request.name().isBlank()) {
+                return ResponseEntity.badRequest().body(Map.<String, Object>of("message", "Hospital name is required"));
+            }
+            applyRequest(hospital, request);
+            return ResponseEntity.ok(toSummary(hospitalRepository.save(hospital)));
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/admin/hospitals/{id}")
+    public ResponseEntity<Void> deleteHospital(@PathVariable Long id) {
+        if (!hospitalRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        boolean hasDoctors = doctorRepository.findAll().stream()
+            .anyMatch(doctor -> doctor.getHospital() != null && id.equals(doctor.getHospital().getId()));
+        if (hasDoctors) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        hospitalRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    private void applyRequest(Hospital hospital, HospitalRequest request) {
+        hospital.setName(request.name().trim());
+        hospital.setAddress(request.address());
+        hospital.setPhone(request.phone());
+        hospital.setEmail(request.email());
+        hospital.setAvatar(request.avatar());
+        hospital.setDescription(request.description());
+        if (request.rating() != null) hospital.setRating(request.rating());
+        if (request.reviewCount() != null) hospital.setReviewCount(request.reviewCount());
+    }
+
+    private record HospitalRequest(
+        String name,
+        String address,
+        String phone,
+        String email,
+        String avatar,
+        Double rating,
+        Integer reviewCount,
+        String description
+    ) {}
 
     private Map<String, Object> toSummary(Hospital hospital) {
         Map<String, Object> map = new LinkedHashMap<>();

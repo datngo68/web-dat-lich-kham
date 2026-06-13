@@ -68,5 +68,25 @@
   "validation": {
     "methodRequired": "Vui lòng chọn phương thức thanh toán",
     "amountInvalid": "Số tiền không hợp lệ"
+  },
+  "modal": {
+    "chooseMethod": "Chọn phương thức thanh toán",
+    "securing": "Đang bảo mật kết nối...",
+    "complete": "Thanh toán hoàn tất",
+    "totalAmount": "Tổng tiền",
+    "consultation": "Lịch khám",
+    "secure": "Thanh toán an toàn",
+    "process": "Đang xử lý thanh toán",
+    "doNotClose": "Vui lòng không đóng cửa sổ hoặc tải lại trang.",
+    "successTitle": "Thanh toán thành công!",
+    "successDescription": "Thanh toán đã được xử lý. Xác nhận đã được gửi tới thông báo của bạn.",
+    "return": "Quay lại lịch khám",
+    "transaction": "Mã giao dịch",
+    "vnpayDescription": "Chuyển khoản ngân hàng nhanh và an toàn",
+    "momoDescription": "Ví điện tử phổ biến tại Việt Nam",
+    "cardDescription": "Visa, Mastercard, JCB",
+    "notificationTitle": "Thanh toán thành công",
+    "notificationMessage": "Thanh toán lịch khám của bạn đã được xử lý.",
+    "encrypted": "Đã mã hóa"
   }
 }
